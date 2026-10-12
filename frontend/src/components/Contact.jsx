@@ -38,52 +38,69 @@ export const Contact = () => {
     setError(null);
 
     try {
-      // 1. Send email directly to anishsingh2095@gmail.com via FormSubmit.co AJAX API
-      const formSubmitPromise = fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          _subject: formData.subject || `New Portfolio Message from ${formData.name}`,
-          subject: formData.subject || 'Portfolio Contact Inquiry',
-          message: formData.message,
-          _template: 'table',
-          _captcha: 'false',
-        }),
-      }).then((r) => r.json());
-
-      // 2. Also save message in backend database for Admin Panel (non-blocking if backend is offline)
-      const backendPromise = messageAPI.send(formData).catch((err) => {
+      // Save in backend DB asynchronously for Admin Panel (non-blocking)
+      messageAPI.send(formData).catch((err) => {
         console.warn('Backend message save skipped:', err.message);
-        return null;
       });
 
-      const [formSubmitRes, backendRes] = await Promise.all([
-        formSubmitPromise,
-        backendPromise,
-      ]);
+      // Prepare FormData for FormSubmit.co
+      const payload = new FormData();
+      payload.append('name', formData.name);
+      payload.append('email', formData.email);
+      payload.append('subject', formData.subject || 'Portfolio Contact Inquiry');
+      payload.append('message', formData.message);
+      payload.append('_subject', formData.subject || `New Portfolio Message from ${formData.name}`);
+      payload.append('_template', 'table');
+      payload.append('_captcha', 'false');
 
-      if (
-        formSubmitRes?.success === 'true' ||
-        formSubmitRes?.success === true ||
-        backendRes?.data?.success
-      ) {
+      const response = await fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: payload,
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (result.success === 'true' || result.success === true) {
         setSuccess(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error(formSubmitRes?.message || 'Failed to send message.');
+        // First-time FormSubmit activation required: submit standard HTML form in a new tab/window so FormSubmit sends the activation email
+        const tempForm = document.createElement('form');
+        tempForm.method = 'POST';
+        tempForm.action = 'https://formsubmit.co/anishsingh2095@gmail.com';
+        tempForm.target = '_blank';
+
+        const fields = {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || 'Portfolio Contact Inquiry',
+          message: formData.message,
+          _subject: formData.subject || `New Portfolio Message from ${formData.name}`,
+          _template: 'table',
+          _captcha: 'false',
+        };
+
+        Object.entries(fields).forEach(([key, val]) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = val;
+          tempForm.appendChild(input);
+        });
+
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        document.body.removeChild(tempForm);
+
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
       }
     } catch (err) {
       console.error('Contact submit error:', err);
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          'Failed to send message. Please try again.'
-      );
+      setError('Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }
