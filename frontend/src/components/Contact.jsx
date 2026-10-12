@@ -43,37 +43,14 @@ export const Contact = () => {
         console.warn('Backend message save skipped:', err.message);
       });
 
-      // Prepare FormData for FormSubmit.co
-      const payload = new FormData();
-      payload.append('name', formData.name);
-      payload.append('email', formData.email);
-      payload.append('subject', formData.subject || 'Portfolio Contact Inquiry');
-      payload.append('message', formData.message);
-      payload.append('_subject', formData.subject || `New Portfolio Message from ${formData.name}`);
-      payload.append('_template', 'table');
-      payload.append('_captcha', 'false');
-
+      // Single clean request to FormSubmit.co (prevents duplicate activation tokens!)
       const response = await fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: payload,
-      });
-
-      const result = await response.json().catch(() => ({}));
-
-      if (result.success === 'true' || result.success === true) {
-        setSuccess(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        // First-time FormSubmit activation required: submit standard HTML form in a new tab/window so FormSubmit sends the activation email
-        const tempForm = document.createElement('form');
-        tempForm.method = 'POST';
-        tempForm.action = 'https://formsubmit.co/anishsingh2095@gmail.com';
-        tempForm.target = '_blank';
-
-        const fields = {
+        body: JSON.stringify({
           name: formData.name,
           email: formData.email,
           subject: formData.subject || 'Portfolio Contact Inquiry',
@@ -81,26 +58,24 @@ export const Contact = () => {
           _subject: formData.subject || `New Portfolio Message from ${formData.name}`,
           _template: 'table',
           _captcha: 'false',
-        };
+        }),
+      });
 
-        Object.entries(fields).forEach(([key, val]) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = val;
-          tempForm.appendChild(input);
-        });
+      const result = await response.json().catch(() => ({}));
 
-        document.body.appendChild(tempForm);
-        tempForm.submit();
-        document.body.removeChild(tempForm);
-
+      if (result.success === 'true' || result.success === true) {
         setSuccess(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
+      } else if (result.message && result.message.toLowerCase().includes('activate')) {
+        // FormSubmit already sent the activation email from this single call!
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error(result.message || 'Failed to send message. Please check your email for FormSubmit activation.');
       }
     } catch (err) {
       console.error('Contact submit error:', err);
-      setError('Failed to send message. Please try again.');
+      setError(err.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }
