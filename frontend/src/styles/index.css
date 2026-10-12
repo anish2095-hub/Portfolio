@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f4f9fd;
+  --bg-alt: #e8f3fa;
+  --surface: #ffffff;
+  --border: rgba(14, 116, 144, 0.12);
+  --text: #0c2333;
+  --text-muted: #436174;
+  --text-faint: #7895a7;
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --primary-soft: rgba(2, 132, 199, 0.1);
+  --accent: #06b6d4;
+  --accent-hover: #0891b2;
+  --accent-soft: rgba(6, 182, 212, 0.12);
+}
+
+.dark {
+  --bg: #08141e;
+  --bg-alt: #0c1d2b;
+  --surface: #102638;
+  --border: rgba(186, 230, 253, 0.12);
+  --text: #f0f9ff;
+  --text-muted: #93b4cb;
+  --text-faint: #62839b;
+  --primary: #38bdf8;
+  --primary-hover: #7dd3fc;
+  --primary-soft: rgba(56, 189, 248, 0.15);
+  --accent: #67e8f9;
+  --accent-hover: #a5f3fc;
+  --accent-soft: rgba(103, 232, 249, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+}
+
+/* Fresh light sky blue organic aura */
+.hero-radial-bg {
+  background: radial-gradient(circle at 80% 15%, rgba(6, 182, 212, 0.12), transparent 50%),
+              radial-gradient(circle at 15% 85%, rgba(2, 132, 199, 0.1), transparent 45%);
+}
+
+/* Code window syntax colors (navy developer terminal) */
+.code-kw { color: #38bdf8; }
+.code-var { color: #a5f3fc; }
+.code-key { color: #7dd3fc; }
+.code-str { color: #34d399; }
+.code-bool { color: #f472b6; }
+.code-comment { color: #64748b; font-style: italic; }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
