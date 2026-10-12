@@ -38,15 +38,51 @@ export const Contact = () => {
     setError(null);
 
     try {
-      const res = await messageAPI.send(formData);
-      if (res.data?.success) {
+      // 1. Send email directly to anishsingh2095@gmail.com via FormSubmit.co AJAX API
+      const formSubmitPromise = fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          _subject: formData.subject || `New Portfolio Message from ${formData.name}`,
+          subject: formData.subject || 'Portfolio Contact Inquiry',
+          message: formData.message,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      }).then((r) => r.json());
+
+      // 2. Also save message in backend database for Admin Panel (non-blocking if backend is offline)
+      const backendPromise = messageAPI.send(formData).catch((err) => {
+        console.warn('Backend message save skipped:', err.message);
+        return null;
+      });
+
+      const [formSubmitRes, backendRes] = await Promise.all([
+        formSubmitPromise,
+        backendPromise,
+      ]);
+
+      if (
+        formSubmitRes?.success === 'true' ||
+        formSubmitRes?.success === true ||
+        backendRes?.data?.success
+      ) {
         setSuccess(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error(formSubmitRes?.message || 'Failed to send message.');
       }
     } catch (err) {
       console.error('Contact submit error:', err);
       setError(
-        err.response?.data?.message || 'Failed to send message. Please try again.'
+        err.response?.data?.message ||
+          err.message ||
+          'Failed to send message. Please try again.'
       );
     } finally {
       setLoading(false);
