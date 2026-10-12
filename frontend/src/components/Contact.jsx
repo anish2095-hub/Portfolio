@@ -32,53 +32,21 @@ export const Contact = () => {
     if (error) setError(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    // Do NOT call e.preventDefault() — let the native HTML <form> submit directly to FormSubmit via the hidden iframe!
     setLoading(true);
     setError(null);
 
-    try {
-      // Save in backend DB asynchronously for Admin Panel (non-blocking)
-      messageAPI.send(formData).catch((err) => {
-        console.warn('Backend message save skipped:', err.message);
-      });
+    // Save in backend DB asynchronously for Admin Panel (non-blocking)
+    messageAPI.send(formData).catch((err) => {
+      console.warn('Backend message save skipped:', err.message);
+    });
 
-      // Single clean request to FormSubmit.co (prevents duplicate activation tokens!)
-      const response = await fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject || 'Portfolio Contact Inquiry',
-          message: formData.message,
-          _subject: formData.subject || `New Portfolio Message from ${formData.name}`,
-          _template: 'table',
-          _captcha: 'false',
-        }),
-      });
-
-      const result = await response.json().catch(() => ({}));
-
-      if (result.success === 'true' || result.success === true) {
-        setSuccess(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else if (result.message && result.message.toLowerCase().includes('activate')) {
-        // FormSubmit already sent the activation email from this single call!
-        setSuccess(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        throw new Error(result.message || 'Failed to send message. Please check your email for FormSubmit activation.');
-      }
-    } catch (err) {
-      console.error('Contact submit error:', err);
-      setError(err.message || 'Failed to send message. Please try again.');
-    } finally {
+    setTimeout(() => {
       setLoading(false);
-    }
+      setSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    }, 1200);
   };
 
   const socialLinks = profile?.socialLinks || {};
@@ -244,13 +212,34 @@ export const Contact = () => {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-                  {error && (
-                    <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                      <span>{error}</span>
-                    </div>
-                  )}
+                <>
+                  <iframe
+                    name="formsubmit_iframe"
+                    id="formsubmit_iframe"
+                    title="FormSubmit"
+                    className="hidden"
+                  />
+                  <form
+                    action="https://formsubmit.co/anishsingh2095@gmail.com"
+                    method="POST"
+                    target="formsubmit_iframe"
+                    onSubmit={handleSubmit}
+                    className="space-y-4 text-xs"
+                  >
+                    {/* FormSubmit configuration fields */}
+                    <input type="hidden" name="_template" value="table" />
+                    <input type="hidden" name="_captcha" value="false" />
+                    <input
+                      type="hidden"
+                      name="_subject"
+                      value={formData.subject || `New Portfolio Message from ${formData.name || 'Visitor'}`}
+                    />
+                    {error && (
+                      <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>{error}</span>
+                      </div>
+                    )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -327,7 +316,8 @@ export const Contact = () => {
                       </>
                     )}
                   </button>
-                </form>
+                  </form>
+                </>
               )}
             </div>
           </div>
