@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Upload, CheckCircle2, AlertCircle, X, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, Award, Upload, CheckCircle2, AlertCircle, X, ExternalLink } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { certificateAPI, uploadAPI } from '../../services/api';
 
@@ -52,13 +52,16 @@ export const AdminCertificates = () => {
       const res = await uploadAPI.uploadImage(file);
       if (res.data?.success && res.data.url) {
         setFormData((prev) => ({ ...prev, image: res.data.url }));
-        setNotification({ type: 'success', message: 'Badge image uploaded!' });
+        setNotification({
+          type: 'success',
+          message: `Certificate image uploaded via ${res.data.provider || 'cloud storage'}!`,
+        });
       }
     } catch (err) {
       console.error(err);
       setNotification({
         type: 'error',
-        message: err.response?.data?.message || 'Failed to upload.',
+        message: err.response?.data?.message || 'Failed to upload image.',
       });
     } finally {
       setUploadingImage(false);
@@ -73,10 +76,10 @@ export const AdminCertificates = () => {
     try {
       if (editingId) {
         await certificateAPI.update(editingId, formData);
-        setNotification({ type: 'success', message: 'Certificate updated!' });
+        setNotification({ type: 'success', message: 'Certificate updated successfully!' });
       } else {
         await certificateAPI.create(formData);
-        setNotification({ type: 'success', message: 'Certificate created!' });
+        setNotification({ type: 'success', message: 'Certificate created successfully!' });
       }
       setModalOpen(false);
       await refreshData();
@@ -95,37 +98,37 @@ export const AdminCertificates = () => {
     if (window.confirm(`Delete certificate "${title}"?`)) {
       try {
         await certificateAPI.delete(id);
-        setNotification({ type: 'success', message: 'Certificate deleted!' });
+        setNotification({ type: 'success', message: 'Certificate deleted successfully!' });
         await refreshData();
       } catch (err) {
         console.error(err);
-        setNotification({ type: 'error', message: 'Failed to delete.' });
+        setNotification({ type: 'error', message: 'Failed to delete certificate.' });
       }
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
-          <h1 className="font-display text-xl sm:text-2xl font-bold">Certificates</h1>
-          <p className="text-xs text-zinc-500">Manage credentials and licenses</p>
+          <h1 className="font-display text-2xl font-bold">Certificates & Credentials</h1>
+          <p className="text-xs text-slate-500">Manage professional licenses and verified credentials</p>
         </div>
         <button
           onClick={openAddModal}
           type="button"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium text-xs font-mono bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs font-mono bg-aurora-cyan text-white hover:opacity-90 shadow-md transition-all"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-4 h-4" />
           <span>Add Certificate</span>
         </button>
       </div>
 
       {notification && (
         <div
-          className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
+          className={`p-4 rounded-xl text-xs flex items-center gap-2.5 ${
             notification.type === 'success'
-              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
               : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
           }`}
         >
@@ -139,24 +142,24 @@ export const AdminCertificates = () => {
       )}
 
       {/* Table */}
-      <div className="rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+      <div className="rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 font-mono uppercase text-zinc-500 text-[11px]">
+            <thead className="bg-slate-50 dark:bg-nebula-900 border-b border-slate-200 dark:border-white/5 font-mono uppercase text-slate-500">
               <tr>
-                <th className="px-5 py-3">Badge</th>
-                <th className="px-5 py-3">Title</th>
-                <th className="px-5 py-3">Issuer</th>
-                <th className="px-5 py-3">Year</th>
-                <th className="px-5 py-3">Link</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+                <th className="px-6 py-3.5">Image</th>
+                <th className="px-6 py-3.5">Title</th>
+                <th className="px-6 py-3.5">Issuer</th>
+                <th className="px-6 py-3.5">Year</th>
+                <th className="px-6 py-3.5">Verification</th>
+                <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {certificates.map((cert) => (
-                <tr key={cert._id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors">
-                  <td className="px-5 py-3">
-                    <div className="w-10 h-8 rounded overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                <tr key={cert._id} className="hover:bg-slate-50/50 dark:hover:bg-nebula-800/40 transition-colors">
+                  <td className="px-6 py-3.5">
+                    <div className="w-12 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-nebula-800 flex-shrink-0">
                       <img
                         src={cert.image || 'https://images.unsplash.com/photo-1589330694653-ded6df03f754?auto=format&fit=crop&w=200&q=80'}
                         alt={cert.title}
@@ -164,44 +167,44 @@ export const AdminCertificates = () => {
                       />
                     </div>
                   </td>
-                  <td className="px-5 py-3 font-bold text-zinc-900 dark:text-white">
+                  <td className="px-6 py-3.5 font-bold text-slate-900 dark:text-white font-display text-sm">
                     {cert.title}
                   </td>
-                  <td className="px-5 py-3 font-mono text-[11px] text-zinc-500 uppercase">
+                  <td className="px-6 py-3.5 font-mono text-aurora-cyan uppercase font-semibold">
                     {cert.issuer}
                   </td>
-                  <td className="px-5 py-3 font-mono text-zinc-500">
+                  <td className="px-6 py-3.5 font-mono text-slate-500">
                     {cert.issueDate}
                   </td>
-                  <td className="px-5 py-3">
+                  <td className="px-6 py-3.5">
                     {cert.credentialUrl ? (
                       <a
                         href={cert.credentialUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-zinc-600 dark:text-zinc-400 hover:text-blue-500"
+                        className="inline-flex items-center gap-1 text-aurora-cyan hover:underline"
                       >
                         <span>Link</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     ) : (
-                      <span className="text-zinc-400 font-mono">—</span>
+                      <span className="text-slate-400 font-mono">—</span>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-right space-x-1.5">
+                  <td className="px-6 py-3.5 text-right space-x-2">
                     <button
                       onClick={() => openEditModal(cert)}
                       type="button"
-                      className="p-1.5 rounded border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-                      title="Edit"
+                      className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-aurora-cyan text-slate-600 dark:text-slate-400 hover:text-aurora-cyan"
+                      title="Edit Certificate"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(cert._id, cert.title)}
                       type="button"
-                      className="p-1.5 rounded border border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
-                      title="Delete"
+                      className="p-1.5 rounded-lg border border-rose-500/20 hover:bg-rose-500/10 text-rose-500"
+                      title="Delete Certificate"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -215,84 +218,84 @@ export const AdminCertificates = () => {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-md rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-nebula-900 border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8">
             <button
               onClick={() => setModalOpen(false)}
               type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+              className="absolute top-6 right-6 p-1.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-nebula-800"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
-            <h2 className="font-display text-lg font-bold mb-1">
-              {editingId ? 'Edit Certificate' : 'New Certificate'}
+            <h2 className="font-display text-xl font-bold mb-1">
+              {editingId ? 'Edit Certificate' : 'Add Certificate'}
             </h2>
-            <p className="text-xs text-zinc-500 mb-4">Credentials & license details</p>
+            <p className="text-xs text-slate-500 mb-6">License or credential verification details</p>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Title *</label>
+                <label className="block font-mono text-slate-500 mb-1">Certificate Title *</label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="AWS Certified Cloud Practitioner"
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  placeholder="e.g. AWS Certified Cloud Practitioner"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono text-zinc-500 mb-1">Issuer *</label>
+                  <label className="block font-mono text-slate-500 mb-1">Issuing Authority *</label>
                   <input
                     type="text"
                     required
                     value={formData.issuer}
                     onChange={(e) => setFormData({ ...formData, issuer: e.target.value })}
-                    placeholder="Amazon Web Services"
-                    className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                    placeholder="e.g. Amazon Web Services"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-mono text-zinc-500 mb-1">Year *</label>
+                  <label className="block font-mono text-slate-500 mb-1">Issue Date / Year *</label>
                   <input
                     type="text"
                     required
                     value={formData.issueDate}
                     onChange={(e) => setFormData({ ...formData, issueDate: e.target.value })}
-                    placeholder="2023"
-                    className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                    placeholder="e.g. 2023"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Credential URL</label>
+                <label className="block font-mono text-slate-500 mb-1">Credential URL</label>
                 <input
                   type="text"
                   value={formData.credentialUrl}
                   onChange={(e) => setFormData({ ...formData, credentialUrl: e.target.value })}
                   placeholder="https://..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Image URL</label>
-                <div className="flex items-center gap-2">
+                <label className="block font-mono text-slate-500 mb-1">Badge / Certificate Image</label>
+                <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="https://..."
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                    placeholder="https://... or upload"
+                    className="flex-1 px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-xs font-mono"
                   />
-                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-xs">
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-aurora-cyan/10 text-aurora-cyan border border-aurora-cyan/30 text-xs font-mono font-medium hover:bg-aurora-cyan/20">
                     <Upload className="w-3.5 h-3.5" />
-                    <span>{uploadingImage ? '...' : 'Upload'}</span>
+                    <span>{uploadingImage ? 'Uploading...' : 'Upload'}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -303,20 +306,20 @@ export const AdminCertificates = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg text-zinc-500"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-1.5 rounded-lg font-medium font-mono text-xs text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:opacity-90 disabled:opacity-50"
+                  className="px-6 py-2 rounded-xl font-medium font-mono text-white bg-aurora-cyan hover:opacity-90 shadow-md transition-all disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : editingId ? 'Update' : 'Create'}
+                  {submitting ? 'Saving...' : editingId ? 'Update Certificate' : 'Create Certificate'}
                 </button>
               </div>
             </form>

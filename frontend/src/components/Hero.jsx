@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Download, Send, ChevronDown } from 'lucide-react';
+import { ArrowRight, Download, Send, Sparkles, ChevronDown } from 'lucide-react';
 import { CodeWindow } from './CodeWindow';
 import { usePortfolio } from '../context/PortfolioContext';
 
@@ -10,9 +10,9 @@ export const Hero = () => {
     ? profile.typingRoles
     : [
         'Full Stack Developer',
-        'MERN Stack Builder',
-        'Cloud & API Engineer',
-        'UI/UX Creative Developer',
+        'MERN Stack Architect',
+        'Creative UI/UX Designer',
+        'Cloud & API Specialist',
       ];
 
   const [roleIndex, setRoleIndex] = useState(0);
@@ -21,7 +21,7 @@ export const Hero = () => {
 
   useEffect(() => {
     const currentFullRole = roles[roleIndex % roles.length];
-    let typingSpeed = isDeleting ? 35 : 75;
+    let typingSpeed = isDeleting ? 40 : 90;
 
     if (!isDeleting && displayText === currentFullRole) {
       const timeout = setTimeout(() => setIsDeleting(true), 1800);
@@ -44,40 +44,48 @@ export const Hero = () => {
   }, [displayText, isDeleting, roleIndex, roles]);
 
   return (
-    <section className="relative min-h-[92vh] pt-28 pb-16 flex items-center justify-center hero-radial-bg overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
+    <section className="relative min-h-screen pt-28 pb-16 flex items-center justify-center overflow-hidden">
+      {/* Ambient background glow orbs */}
+      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-aurora-cyan/15 rounded-full blur-[120px] pointer-events-none aurora-orb" />
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-aurora-violet/15 rounded-full blur-[130px] pointer-events-none aurora-orb" />
+      <div className="absolute top-2/3 left-1/3 w-64 h-64 bg-aurora-rose/10 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column */}
+          {/* Left Column: Introductions */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
-            {/* Status Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0284c7]/10 dark:bg-[#38bdf8]/15 border border-[#0284c7]/25 dark:border-[#38bdf8]/30 text-xs font-mono text-[#0284c7] dark:text-[#38bdf8] mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#0284c7] dark:bg-[#38bdf8] animate-pulse" />
-              <span>{profile?.availability || 'Available for web projects & freelance'}</span>
+            {/* Status Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-nebula-850 border border-slate-300 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 mb-6 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span>{profile?.availability || 'Available for New Projects & Full-time Roles'}</span>
             </div>
 
             {/* Main Title */}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0c2333] dark:text-[#f0f9ff] leading-[1.12] mb-4">
-              Hi, I'm <span className="text-[#0284c7] dark:text-[#38bdf8]">{profile?.name || 'Alex Rivera'}</span>.
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-4">
+              Hi, I'm{' '}
+              <span className="gradient-text-aurora">
+                {profile?.name || 'Anish Singh'}
+              </span>
             </h1>
 
-            {/* Typing Role */}
-            <div className="font-mono text-xl sm:text-2xl font-semibold text-[#436174] dark:text-[#93b4cb] mb-5 flex items-center min-h-[2.2rem]">
-              <span className="text-[#06b6d4] dark:text-[#67e8f9] mr-2">›</span>
-              <span className="text-[#0284c7] dark:text-[#38bdf8]">{displayText}</span>
-              <span className="w-2.5 h-6 ml-1 bg-[#06b6d4] dark:bg-[#67e8f9] animate-pulse inline-block" />
+            {/* Animated Typing Role */}
+            <div className="font-mono text-xl sm:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-6 flex items-center min-h-[2.5rem]">
+              <span className="text-aurora-cyan mr-2">&gt;</span>
+              <span className="text-slate-900 dark:text-white">{displayText}</span>
+              <span className="w-2.5 h-6 ml-1 bg-aurora-cyan animate-pulse inline-block" />
             </div>
 
-            {/* Tagline */}
-            <p className="text-base sm:text-lg text-[#436174] dark:text-[#93b4cb] max-w-xl leading-relaxed mb-8">
+            {/* Tagline / Summary */}
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed mb-8">
               {profile?.tagline ||
-                'Designing and building modern web applications, scalable architectures, and smooth interactive interfaces.'}
+                'Designing and engineering high-impact digital products, scalable web architectures, and fluid interactive experiences.'}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
               <a
                 href="#projects"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-sky-md hover:shadow-sky-lg hover:-translate-y-0.5 transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose hover:opacity-95 shadow-lg shadow-aurora-cyan/20 transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 <span>View Projects</span>
                 <ArrowRight className="w-4 h-4" />
@@ -85,9 +93,9 @@ export const Hero = () => {
 
               <a
                 href="#contact"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm text-[#0c2333] dark:text-[#f0f9ff] bg-white dark:bg-[#102638] hover:bg-[#e8f3fa] dark:hover:bg-[#153249] border border-[#0284c7]/20 dark:border-[#38bdf8]/20 hover:border-[#0284c7] dark:hover:border-[#38bdf8] hover:-translate-y-0.5 transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm text-slate-800 dark:text-white bg-slate-100 dark:bg-nebula-850 hover:bg-slate-200 dark:hover:bg-nebula-800 border border-slate-300 dark:border-white/10 transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                <Send className="w-4 h-4 text-[#06b6d4] dark:text-[#67e8f9]" />
+                <Send className="w-4 h-4 text-aurora-cyan" />
                 <span>Contact Me</span>
               </a>
 
@@ -96,7 +104,7 @@ export const Hero = () => {
                   href={profile.resumeUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium text-sm text-[#436174] dark:text-[#93b4cb] hover:text-[#0284c7] dark:hover:text-[#38bdf8] transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-transparent hover:border-slate-300 dark:hover:border-white/10 transition-all"
                 >
                   <Download className="w-4 h-4" />
                   <span>Resume</span>
@@ -104,15 +112,15 @@ export const Hero = () => {
               )}
             </div>
 
-            {/* Metrics */}
+            {/* Quick Metrics */}
             {profile?.stats?.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-[#0284c7]/15 dark:border-[#38bdf8]/15 w-full">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-slate-200 dark:border-white/10 w-full">
                 {profile.stats.map((stat, idx) => (
                   <div key={idx} className="flex flex-col">
-                    <span className="font-display text-2xl font-bold text-[#0c2333] dark:text-[#f0f9ff]">
+                    <span className="font-display text-2xl font-bold text-slate-900 dark:text-white">
                       {stat.value}
                     </span>
-                    <span className="text-xs text-[#7895a7] dark:text-[#62839b] font-medium mt-0.5">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
                       {stat.label}
                     </span>
                   </div>
@@ -121,21 +129,21 @@ export const Hero = () => {
             )}
           </div>
 
-          {/* Right Column: Code Window */}
-          <div className="lg:col-span-5 flex justify-center w-full">
+          {/* Right Column: Interactive Code Window */}
+          <div className="lg:col-span-5 flex justify-center">
             <CodeWindow profile={profile} />
           </div>
         </div>
       </div>
 
-      {/* Scroll Down */}
+      {/* Scroll Down Indicator */}
       <a
         href="#about"
-        className="hidden md:flex absolute bottom-5 left-1/2 -translate-x-1/2 flex-col items-center gap-1 text-xs text-[#7895a7] dark:text-[#62839b] hover:text-[#0284c7] dark:hover:text-[#38bdf8] transition-colors"
-        aria-label="Scroll to About"
+        className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 hover:text-aurora-cyan transition-colors"
+        aria-label="Scroll down to About section"
       >
-        <span className="font-mono text-[10px] tracking-widest uppercase">Scroll</span>
-        <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
+        <span className="font-mono text-[11px]">SCROLL</span>
+        <ChevronDown className="w-4 h-4 animate-bounce" />
       </a>
     </section>
   );

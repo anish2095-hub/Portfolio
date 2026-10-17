@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Play, ExternalLink, CheckCircle2, AlertCircle, X, Upload } from 'lucide-react';
+import { Plus, Trash2, Video, Play, ExternalLink, CheckCircle2, AlertCircle, X, Upload } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { mediaAPI, uploadAPI } from '../../services/api';
 
@@ -30,7 +30,10 @@ export const AdminMedia = () => {
       const res = await uploadAPI.uploadImage(file);
       if (res.data?.success && res.data.url) {
         setFormData((prev) => ({ ...prev, thumbnailUrl: res.data.url }));
-        setNotification({ type: 'success', message: 'Thumbnail uploaded!' });
+        setNotification({
+          type: 'success',
+          message: `Thumbnail uploaded via ${res.data.provider || 'cloud storage'}!`,
+        });
       }
     } catch (err) {
       console.error(err);
@@ -50,7 +53,7 @@ export const AdminMedia = () => {
 
     try {
       await mediaAPI.create(formData);
-      setNotification({ type: 'success', message: 'Media item added!' });
+      setNotification({ type: 'success', message: 'Media item added successfully!' });
       setModalOpen(false);
       setFormData(initialForm);
       await refreshData();
@@ -58,7 +61,7 @@ export const AdminMedia = () => {
       console.error(err);
       setNotification({
         type: 'error',
-        message: err.response?.data?.message || 'Failed to create.',
+        message: err.response?.data?.message || 'Failed to create media item.',
       });
     } finally {
       setSubmitting(false);
@@ -80,10 +83,10 @@ export const AdminMedia = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
-          <h1 className="font-display text-xl sm:text-2xl font-bold">Media & Videos</h1>
-          <p className="text-xs text-zinc-500">Manage tutorial and walkthrough videos</p>
+          <h1 className="font-display text-2xl font-bold">Media & Videos Manager</h1>
+          <p className="text-xs text-slate-500">Add YouTube tutorials, walkthrough videos, or creative media</p>
         </div>
         <button
           onClick={() => {
@@ -91,18 +94,18 @@ export const AdminMedia = () => {
             setModalOpen(true);
           }}
           type="button"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium text-xs font-mono bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs font-mono bg-aurora-cyan text-white hover:opacity-90 shadow-md transition-all"
         >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Video</span>
+          <Plus className="w-4 h-4" />
+          <span>Add Media Item</span>
         </button>
       </div>
 
       {notification && (
         <div
-          className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
+          className={`p-4 rounded-xl text-xs flex items-center gap-2.5 ${
             notification.type === 'success'
-              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
               : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
           }`}
         >
@@ -115,38 +118,38 @@ export const AdminMedia = () => {
         </div>
       )}
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Media Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {media.map((item) => (
           <div
             key={item._id}
-            className="rounded-xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col"
+            className="rounded-2xl overflow-hidden bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm flex flex-col"
           >
-            <div className="relative aspect-video bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="relative aspect-video bg-slate-100 dark:bg-nebula-800">
               <img
                 src={item.thumbnailUrl || 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=600&q=80'}
                 alt={item.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-2 right-2 p-1 rounded bg-black/60 text-white">
-                <Play className="w-3 h-3 fill-current" />
+              <div className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/60 text-white">
+                <Play className="w-3.5 h-3.5 fill-current" />
               </div>
             </div>
 
             <div className="p-4 flex-1 flex flex-col">
-              <h4 className="font-display font-bold text-sm text-zinc-900 dark:text-white line-clamp-1 mb-1">
+              <h4 className="font-display font-bold text-sm text-slate-900 dark:text-white line-clamp-1 mb-1">
                 {item.title}
               </h4>
-              <p className="text-xs text-zinc-500 line-clamp-2 mb-3">
+              <p className="text-xs text-slate-500 line-clamp-2 mb-3">
                 {item.caption || 'No caption'}
               </p>
 
-              <div className="mt-auto pt-2.5 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+              <div className="mt-auto pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-blue-500"
+                  className="inline-flex items-center gap-1 text-xs font-mono text-aurora-cyan hover:underline"
                 >
                   <span>Watch</span>
                   <ExternalLink className="w-3 h-3" />
@@ -155,7 +158,7 @@ export const AdminMedia = () => {
                 <button
                   onClick={() => handleDelete(item._id, item.title)}
                   type="button"
-                  className="p-1 rounded text-rose-500 hover:bg-rose-500/10"
+                  className="p-1.5 rounded-lg border border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -167,56 +170,57 @@ export const AdminMedia = () => {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-md rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-nebula-900 border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8">
             <button
               onClick={() => setModalOpen(false)}
               type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+              className="absolute top-6 right-6 p-1.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-nebula-800"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
-            <h2 className="font-display text-lg font-bold mb-1">New Media Item</h2>
-            <p className="text-xs text-zinc-500 mb-4">Video or tutorial link</p>
+            <h2 className="font-display text-xl font-bold mb-1">Add Media Item</h2>
+            <p className="text-xs text-slate-500 mb-6">YouTube video, walkthrough, or tutorial</p>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Title *</label>
+                <label className="block font-mono text-slate-500 mb-1">Title *</label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  placeholder="e.g. Building MERN Full Stack App"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Video Link *</label>
+                <label className="block font-mono text-slate-500 mb-1">Video or Media Link *</label>
                 <input
                   type="text"
                   required
                   value={formData.url}
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                  placeholder="https://youtube.com/..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                  placeholder="https://youtube.com/watch?v=..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Thumbnail URL</label>
-                <div className="flex items-center gap-2">
+                <label className="block font-mono text-slate-500 mb-1">Thumbnail Image</label>
+                <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
                     value={formData.thumbnailUrl}
                     onChange={(e) => setFormData({ ...formData, thumbnailUrl: e.target.value })}
-                    placeholder="https://..."
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                    placeholder="https://... or upload"
+                    className="flex-1 px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-xs font-mono"
                   />
-                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-xs">
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-aurora-cyan/10 text-aurora-cyan border border-aurora-cyan/30 text-xs font-mono font-medium hover:bg-aurora-cyan/20">
                     <Upload className="w-3.5 h-3.5" />
-                    <span>{uploadingThumb ? '...' : 'Upload'}</span>
+                    <span>{uploadingThumb ? 'Uploading...' : 'Upload'}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -228,29 +232,29 @@ export const AdminMedia = () => {
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Caption</label>
+                <label className="block font-mono text-slate-500 mb-1">Caption / Summary</label>
                 <textarea
                   rows={2}
                   value={formData.caption}
                   onChange={(e) => setFormData({ ...formData, caption: e.target.value })}
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg text-zinc-500"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-1.5 rounded-lg font-medium font-mono text-xs text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:opacity-90 disabled:opacity-50"
+                  className="px-6 py-2 rounded-xl font-medium font-mono text-white bg-aurora-cyan hover:opacity-90 shadow-md transition-all disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : 'Add Video'}
+                  {submitting ? 'Saving...' : 'Add Media'}
                 </button>
               </div>
             </form>

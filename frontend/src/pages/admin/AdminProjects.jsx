@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Star, Upload, X, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, ExternalLink, Star, Upload, X, CheckCircle2, AlertCircle } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { projectAPI, uploadAPI } from '../../services/api';
 
@@ -62,7 +62,7 @@ export const AdminProjects = () => {
         setFormData((prev) => ({ ...prev, coverImage: res.data.url }));
         setNotification({
           type: 'success',
-          message: 'Cover image uploaded!',
+          message: `Cover image uploaded via ${res.data.provider || 'cloud storage'}!`,
         });
       }
     } catch (err) {
@@ -92,10 +92,10 @@ export const AdminProjects = () => {
     try {
       if (editingId) {
         await projectAPI.update(editingId, payload);
-        setNotification({ type: 'success', message: 'Project updated!' });
+        setNotification({ type: 'success', message: 'Project updated successfully!' });
       } else {
         await projectAPI.create(payload);
-        setNotification({ type: 'success', message: 'Project created!' });
+        setNotification({ type: 'success', message: 'New project created successfully!' });
       }
       setModalOpen(false);
       await refreshData();
@@ -111,10 +111,10 @@ export const AdminProjects = () => {
   };
 
   const handleDelete = async (id, title) => {
-    if (window.confirm(`Delete "${title}"?`)) {
+    if (window.confirm(`Are you sure you want to delete "${title}"?`)) {
       try {
         await projectAPI.delete(id);
-        setNotification({ type: 'success', message: 'Project deleted!' });
+        setNotification({ type: 'success', message: 'Project deleted successfully!' });
         await refreshData();
       } catch (err) {
         console.error(err);
@@ -125,26 +125,26 @@ export const AdminProjects = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
-          <h1 className="font-display text-xl sm:text-2xl font-bold">Projects</h1>
-          <p className="text-xs text-zinc-500">Manage showcase applications</p>
+          <h1 className="font-display text-2xl font-bold">Projects Manager</h1>
+          <p className="text-xs text-slate-500">Add, edit, or delete portfolio showcase projects</p>
         </div>
         <button
           onClick={openAddModal}
           type="button"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium text-xs font-mono bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs font-mono bg-aurora-cyan text-white hover:opacity-90 shadow-md transition-all"
         >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Project</span>
+          <Plus className="w-4 h-4" />
+          <span>Add New Project</span>
         </button>
       </div>
 
       {notification && (
         <div
-          className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
+          className={`p-4 rounded-xl text-xs flex items-center gap-2.5 ${
             notification.type === 'success'
-              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
               : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
           }`}
         >
@@ -158,30 +158,30 @@ export const AdminProjects = () => {
       )}
 
       {/* Projects Table */}
-      <div className="rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+      <div className="rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 font-mono uppercase text-zinc-500 text-[11px]">
+            <thead className="bg-slate-50 dark:bg-nebula-900 border-b border-slate-200 dark:border-white/5 font-mono uppercase text-slate-500">
               <tr>
-                <th className="px-5 py-3">Cover</th>
-                <th className="px-5 py-3">Title</th>
-                <th className="px-5 py-3">Category</th>
-                <th className="px-5 py-3">Featured</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+                <th className="px-6 py-3.5">Cover</th>
+                <th className="px-6 py-3.5">Title & Summary</th>
+                <th className="px-6 py-3.5">Category</th>
+                <th className="px-6 py-3.5">Featured</th>
+                <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {projects.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-zinc-400 font-mono">
-                    No projects found. Click "New Project" to create one.
+                  <td colSpan={5} className="px-6 py-8 text-center text-slate-400 font-mono">
+                    No projects found. Click "Add New Project" to create one.
                   </td>
                 </tr>
               ) : (
                 projects.map((p) => (
-                  <tr key={p._id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors">
-                    <td className="px-5 py-3">
-                      <div className="w-12 h-9 rounded overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex-shrink-0 border border-zinc-200 dark:border-zinc-700">
+                  <tr key={p._id} className="hover:bg-slate-50/50 dark:hover:bg-nebula-800/40 transition-colors">
+                    <td className="px-6 py-3.5">
+                      <div className="w-14 h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-nebula-800 flex-shrink-0">
                         <img
                           src={p.coverImage || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=200&q=80'}
                           alt={p.title}
@@ -189,39 +189,41 @@ export const AdminProjects = () => {
                         />
                       </div>
                     </td>
-                    <td className="px-5 py-3 max-w-xs">
-                      <p className="font-bold text-zinc-900 dark:text-white">
+                    <td className="px-6 py-3.5 max-w-xs">
+                      <p className="font-display font-bold text-slate-900 dark:text-white text-sm">
                         {p.title}
                       </p>
-                      <p className="text-zinc-500 line-clamp-1">{p.summary}</p>
+                      <p className="text-slate-500 line-clamp-1">{p.summary}</p>
                     </td>
-                    <td className="px-5 py-3 font-mono text-[11px] uppercase text-zinc-500">
-                      {p.category}
+                    <td className="px-6 py-3.5">
+                      <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-nebula-800 border border-slate-200 dark:border-white/10 uppercase">
+                        {p.category}
+                      </span>
                     </td>
-                    <td className="px-5 py-3 font-mono text-[11px]">
+                    <td className="px-6 py-3.5">
                       {p.featured ? (
-                        <span className="text-amber-500 font-medium flex items-center gap-1">
+                        <span className="inline-flex items-center gap-1 font-mono text-[11px] text-amber-500 font-semibold">
                           <Star className="w-3 h-3 fill-current" />
                           <span>Yes</span>
                         </span>
                       ) : (
-                        <span className="text-zinc-400">No</span>
+                        <span className="font-mono text-[11px] text-slate-400">No</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-right space-x-1.5">
+                    <td className="px-6 py-3.5 text-right space-x-2">
                       <button
                         onClick={() => openEditModal(p)}
                         type="button"
-                        className="p-1.5 rounded border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-                        title="Edit"
+                        className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-aurora-cyan text-slate-600 dark:text-slate-400 hover:text-aurora-cyan"
+                        title="Edit Project"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(p._id, p.title)}
                         type="button"
-                        className="p-1.5 rounded border border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
-                        title="Delete"
+                        className="p-1.5 rounded-lg border border-rose-500/20 hover:bg-rose-500/10 text-rose-500"
+                        title="Delete Project"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -234,42 +236,42 @@ export const AdminProjects = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Add / Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-nebula-900 border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8">
             <button
               onClick={() => setModalOpen(false)}
               type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+              className="absolute top-6 right-6 p-1.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-nebula-800"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
-            <h2 className="font-display text-lg font-bold mb-1">
-              {editingId ? 'Edit Project' : 'New Project'}
+            <h2 className="font-display text-xl font-bold mb-1">
+              {editingId ? 'Edit Project' : 'Create New Project'}
             </h2>
-            <p className="text-xs text-zinc-500 mb-4">Fill in project details</p>
+            <p className="text-xs text-slate-500 mb-6">Fill in project details and upload cover image</p>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono text-zinc-500 mb-1">Title *</label>
+                  <label className="block font-mono text-slate-500 mb-1">Project Title *</label>
                   <input
                     type="text"
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-mono text-zinc-500 mb-1">Category</label>
+                  <label className="block font-mono text-slate-500 mb-1">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                   >
                     <option value="fullstack">Full Stack</option>
                     <option value="frontend">Frontend</option>
@@ -281,40 +283,42 @@ export const AdminProjects = () => {
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Short Summary *</label>
+                <label className="block font-mono text-slate-500 mb-1">Short Summary *</label>
                 <input
                   type="text"
                   required
                   value={formData.summary}
                   onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                  placeholder="One sentence summary"
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  placeholder="One sentence describing what this project does"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Full Description</label>
+                <label className="block font-mono text-slate-500 mb-1">Full Description</label>
                 <textarea
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  placeholder="In-depth explanation of features, challenges, and architecture..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
+              {/* Cover Image Upload / URL */}
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Cover Image URL</label>
-                <div className="flex items-center gap-2">
+                <label className="block font-mono text-slate-500 mb-1">Cover Image</label>
+                <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
                     value={formData.coverImage}
                     onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                    placeholder="https://..."
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                    placeholder="https://... or upload below"
+                    className="flex-1 px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-xs font-mono"
                   />
-                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono text-xs">
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-aurora-cyan/10 text-aurora-cyan border border-aurora-cyan/30 text-xs font-mono font-medium hover:bg-aurora-cyan/20">
                     <Upload className="w-3.5 h-3.5" />
-                    <span>{uploadingImage ? '...' : 'Upload'}</span>
+                    <span>{uploadingImage ? 'Uploading...' : 'Upload'}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -323,70 +327,82 @@ export const AdminProjects = () => {
                     />
                   </label>
                 </div>
+                {formData.coverImage && (
+                  <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-nebula-800">
+                    <img
+                      src={formData.coverImage}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">
-                  Technologies (Comma separated)
+                <label className="block font-mono text-slate-500 mb-1">
+                  Technologies (Separate with commas)
                 </label>
                 <input
                   type="text"
                   value={formData.technologies}
                   onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
-                  placeholder="React, Node.js, Express, MongoDB"
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                  placeholder="React, Node.js, Express, MongoDB, TailwindCSS"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono text-zinc-500 mb-1">Demo URL</label>
+                  <label className="block font-mono text-slate-500 mb-1">Live Demo URL</label>
                   <input
                     type="text"
                     value={formData.liveUrl}
                     onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
-                    className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                    placeholder="https://myproject.com"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-xs font-mono"
                   />
                 </div>
+
                 <div>
-                  <label className="block font-mono text-zinc-500 mb-1">GitHub URL</label>
+                  <label className="block font-mono text-slate-500 mb-1">GitHub Repo URL</label>
                   <input
                     type="text"
                     value={formData.githubUrl}
                     onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
-                    className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-mono text-xs"
+                    placeholder="https://github.com/..."
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-xs font-mono"
                   />
                 </div>
               </div>
 
-              <div className="pt-1">
+              <div className="flex items-center gap-3 pt-2">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={formData.featured}
                     onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                    className="rounded text-zinc-900"
+                    className="w-4 h-4 rounded text-aurora-cyan focus:ring-aurora-cyan"
                   />
-                  <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
-                    Feature on homepage
+                  <span className="font-mono text-xs text-slate-700 dark:text-slate-300">
+                    Feature on Home page hero / highlights
                   </span>
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg text-zinc-500 hover:text-zinc-800"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-1.5 rounded-lg font-medium font-mono text-xs text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:opacity-90 disabled:opacity-50"
+                  className="px-6 py-2 rounded-xl font-medium font-mono text-white bg-aurora-cyan hover:opacity-90 shadow-md transition-all disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : editingId ? 'Update' : 'Create'}
+                  {submitting ? 'Saving...' : editingId ? 'Update Project' : 'Create Project'}
                 </button>
               </div>
             </form>

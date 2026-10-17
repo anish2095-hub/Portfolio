@@ -11,12 +11,13 @@ import {
   Trash2,
   Cloud,
   Server,
+  Sparkles,
 } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { messageAPI } from '../../services/api';
 
 export const AdminDashboard = () => {
-  const { profile, projects, skills, certificates } = usePortfolio();
+  const { profile, projects, skills, certificates, refreshData } = usePortfolio();
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingMessages, setLoadingMessages] = useState(true);
@@ -26,7 +27,7 @@ export const AdminDashboard = () => {
       setLoadingMessages(true);
       const res = await messageAPI.getAll();
       if (res.data?.success) {
-        setMessages(res.data.data.slice(0, 5));
+        setMessages(res.data.data.slice(0, 5)); // show recent 5
         setUnreadCount(res.data.unreadCount || 0);
       }
     } catch (err) {
@@ -62,87 +63,96 @@ export const AdminDashboard = () => {
 
   const stats = [
     {
-      label: 'Projects',
+      label: 'Total Projects',
       value: projects.length,
       icon: FolderGit2,
       path: '/admin/projects',
+      color: 'text-aurora-cyan',
+      bgColor: 'bg-aurora-cyan/10',
     },
     {
-      label: 'Skills',
+      label: 'Active Skills',
       value: skills.length,
       icon: Cpu,
       path: '/admin/skills',
+      color: 'text-aurora-violet',
+      bgColor: 'bg-aurora-violet/10',
     },
     {
       label: 'Certifications',
       value: certificates.length,
       icon: Award,
       path: '/admin/certificates',
+      color: 'text-aurora-amber',
+      bgColor: 'bg-amber-500/10',
     },
     {
       label: 'Unread Inquiries',
       value: unreadCount,
       icon: Mail,
       path: '/admin/messages',
-      isAlert: unreadCount > 0,
+      color: 'text-rose-500',
+      bgColor: 'bg-rose-500/10',
     },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-8">
+      {/* Welcome Banner */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-aurora-cyan/10 via-aurora-violet/10 to-aurora-rose/10 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
         <div>
-          <span className="font-mono text-xs uppercase tracking-wider text-zinc-500">
-            // Overview
+          <span className="font-mono text-xs uppercase tracking-wider text-aurora-cyan font-semibold">
+            // CMS Overview
           </span>
-          <h1 className="font-display text-xl sm:text-2xl font-bold mt-0.5 text-zinc-900 dark:text-white">
-            Dashboard
+          <h1 className="font-display text-2xl sm:text-3xl font-bold mt-1 text-slate-900 dark:text-white">
+            Welcome back, {profile?.name || 'Admin'}
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-xs mt-0.5">
-            Manage projects, skills, biography, and incoming messages.
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            Manage your live portfolio projects, technical skills, biography, and incoming messages.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <Link
             to="/admin/projects"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs font-mono bg-aurora-cyan text-white hover:opacity-95 shadow-md shadow-aurora-cyan/20 transition-all"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
             <span>New Project</span>
           </Link>
           <Link
             to="/admin/profile"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-mono font-medium bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs font-mono bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/10 hover:border-aurora-cyan transition-all"
           >
             <span>Edit Profile</span>
           </Link>
         </div>
       </div>
 
-      {/* Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((s, idx) => {
           const Icon = s.icon;
           return (
             <Link
               key={idx}
               to={s.path}
-              className="p-5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors group"
+              className="p-6 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm transition-all hover:-translate-y-1 group"
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono text-zinc-500 uppercase">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-mono text-slate-500 uppercase tracking-wider">
                   {s.label}
                 </span>
-                <Icon className="w-4 h-4 text-zinc-400" />
+                <div className={`p-2.5 rounded-xl ${s.bgColor} ${s.color}`}>
+                  <Icon className="w-5 h-5" />
+                </div>
               </div>
               <div className="flex items-baseline justify-between">
-                <span className={`font-display text-2xl font-bold ${s.isAlert ? 'text-rose-500' : 'text-zinc-900 dark:text-white'}`}>
+                <span className="font-display text-3xl font-extrabold text-slate-900 dark:text-white">
                   {s.value}
                 </span>
-                <span className="text-xs font-mono text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200 flex items-center gap-0.5">
-                  <span>View</span>
+                <span className="text-xs font-mono text-slate-400 group-hover:text-aurora-cyan flex items-center gap-0.5 transition-colors">
+                  <span>Manage</span>
                   <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
@@ -151,89 +161,110 @@ export const AdminDashboard = () => {
         })}
       </div>
 
-      {/* Deployment Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs">
-          <div className="flex items-center gap-2 mb-2 font-semibold text-zinc-900 dark:text-white">
-            <Cloud className="w-4 h-4 text-zinc-500" />
-            <span>Frontend: Vercel Ready</span>
+      {/* Deployment & Architecture Status Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-6 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-xl bg-aurora-cyan/10 text-aurora-cyan">
+              <Cloud className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-display font-bold text-base">Frontend: Vercel Ready</h3>
+              <p className="text-xs text-slate-500">React + Vite SPA configured with vercel.json</p>
+            </div>
           </div>
-          <p className="text-zinc-500 leading-relaxed">
-            Client-side SPA routes configured in <code className="font-mono text-zinc-800 dark:text-zinc-200">vercel.json</code>. Set environment variable <code className="font-mono text-zinc-800 dark:text-zinc-200">VITE_API_URL</code> on Vercel.
+          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Deployment routing rules configured in <code className="font-mono text-aurora-cyan">vercel.json</code> with SPA client rewrite support. Connect to Vercel and set <code className="font-mono text-aurora-cyan">VITE_API_URL</code> to your Render URL.
           </p>
         </div>
 
-        <div className="p-5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs">
-          <div className="flex items-center gap-2 mb-2 font-semibold text-zinc-900 dark:text-white">
-            <Server className="w-4 h-4 text-zinc-500" />
-            <span>Backend: Render Ready</span>
+        <div className="p-6 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 rounded-xl bg-aurora-violet/10 text-aurora-violet">
+              <Server className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-display font-bold text-base">Backend: Render Ready</h3>
+              <p className="text-xs text-slate-500">Node/Express API configured with render.yaml & /health</p>
+            </div>
           </div>
-          <p className="text-zinc-500 leading-relaxed">
-            API service configured in <code className="font-mono text-zinc-800 dark:text-zinc-200">render.yaml</code> with health probe on <code className="font-mono text-zinc-800 dark:text-zinc-200">/health</code> and MongoDB Atlas support.
+          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Ready for 1-click deploy with blueprint <code className="font-mono text-aurora-cyan">render.yaml</code>. Includes health checks on <code className="font-mono text-aurora-cyan">/health</code>, CORS origin handlers, and MongoDB Atlas support.
           </p>
         </div>
       </div>
 
-      {/* Recent Inquiries */}
-      <div className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display font-bold text-base text-zinc-900 dark:text-white">
-            Recent Inquiries
-          </h3>
+      {/* Recent Contact Inquiries */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Recent Inquiries
+            </h3>
+            <p className="text-xs text-slate-500">Latest messages submitted via the public contact form</p>
+          </div>
           <Link
             to="/admin/messages"
-            className="text-xs font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1"
+            className="text-xs font-mono text-aurora-cyan hover:underline flex items-center gap-1"
           >
             <span>View All</span>
-            <ArrowRight className="w-3 h-3" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {loadingMessages ? (
-          <div className="py-6 text-center text-xs font-mono text-zinc-400">Loading...</div>
+          <div className="py-8 text-center text-xs font-mono text-slate-400">Loading inquiries...</div>
         ) : messages.length === 0 ? (
-          <div className="py-6 text-center text-xs text-zinc-500 font-mono">
-            No inquiries received yet.
+          <div className="py-8 text-center text-xs text-slate-500 font-mono">
+            No inquiries received yet. Submit a test message on the public portfolio!
           </div>
         ) : (
-          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {messages.map((msg) => (
               <div
                 key={msg._id}
-                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                className={`py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+                  !msg.read ? 'bg-aurora-cyan/5 -mx-4 px-4 rounded-xl' : ''
+                }`}
               >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-bold text-zinc-900 dark:text-white">
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-display font-bold text-sm text-slate-900 dark:text-white">
                       {msg.name}
                     </span>
                     {!msg.read && (
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-rose-600 text-white font-semibold">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500 text-white">
                         NEW
                       </span>
                     )}
-                    <span className="text-zinc-400 font-mono text-[11px]">&lt;{msg.email}&gt;</span>
+                    <span className="text-xs font-mono text-slate-400">({msg.email})</span>
                   </div>
-                  <p className="text-zinc-700 dark:text-zinc-300 font-medium truncate">{msg.subject}</p>
-                  <p className="text-zinc-500 line-clamp-1">{msg.message}</p>
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-0.5 truncate">
+                    {msg.subject}
+                  </p>
+                  <p className="text-xs text-slate-500 line-clamp-1">{msg.message}</p>
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => handleToggleRead(msg._id, msg.read)}
                     type="button"
-                    title={msg.read ? 'Mark Unread' : 'Mark Read'}
-                    className="p-1.5 rounded border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+                    title={msg.read ? 'Mark as Unread' : 'Mark as Read'}
+                    className={`p-2 rounded-lg text-xs font-mono border ${
+                      msg.read
+                        ? 'border-slate-200 dark:border-white/10 text-slate-400'
+                        : 'border-aurora-cyan/40 bg-aurora-cyan/10 text-aurora-cyan font-bold'
+                    }`}
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteMessage(msg._id)}
                     type="button"
-                    title="Delete"
-                    className="p-1.5 rounded border border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
+                    title="Delete message"
+                    className="p-2 rounded-lg text-xs border border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>

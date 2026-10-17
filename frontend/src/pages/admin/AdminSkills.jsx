@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, CheckCircle2, AlertCircle, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Cpu, CheckCircle2, AlertCircle, X } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { skillAPI } from '../../services/api';
 
@@ -46,10 +46,10 @@ export const AdminSkills = () => {
     try {
       if (editingId) {
         await skillAPI.update(editingId, formData);
-        setNotification({ type: 'success', message: 'Skill updated!' });
+        setNotification({ type: 'success', message: 'Skill updated successfully!' });
       } else {
         await skillAPI.create(formData);
-        setNotification({ type: 'success', message: 'Skill created!' });
+        setNotification({ type: 'success', message: 'New skill created successfully!' });
       }
       setModalOpen(false);
       await refreshData();
@@ -68,7 +68,7 @@ export const AdminSkills = () => {
     if (window.confirm(`Delete skill "${name}"?`)) {
       try {
         await skillAPI.delete(id);
-        setNotification({ type: 'success', message: 'Skill deleted!' });
+        setNotification({ type: 'success', message: 'Skill deleted successfully!' });
         await refreshData();
       } catch (err) {
         console.error(err);
@@ -79,26 +79,26 @@ export const AdminSkills = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
-          <h1 className="font-display text-xl sm:text-2xl font-bold">Skills</h1>
-          <p className="text-xs text-zinc-500">Manage technical stack proficiencies</p>
+          <h1 className="font-display text-2xl font-bold">Skills Manager</h1>
+          <p className="text-xs text-slate-500">Add, edit, or adjust technical expertise & proficiencies</p>
         </div>
         <button
           onClick={openAddModal}
           type="button"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium text-xs font-mono bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs font-mono bg-aurora-cyan text-white hover:opacity-90 shadow-md transition-all"
         >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Skill</span>
+          <Plus className="w-4 h-4" />
+          <span>Add New Skill</span>
         </button>
       </div>
 
       {notification && (
         <div
-          className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
+          className={`p-4 rounded-xl text-xs flex items-center gap-2.5 ${
             notification.type === 'success'
-              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
               : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
           }`}
         >
@@ -111,58 +111,60 @@ export const AdminSkills = () => {
         </div>
       )}
 
-      {/* Table */}
-      <div className="rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+      {/* Skills Table */}
+      <div className="rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 font-mono uppercase text-zinc-500 text-[11px]">
+            <thead className="bg-slate-50 dark:bg-nebula-900 border-b border-slate-200 dark:border-white/5 font-mono uppercase text-slate-500">
               <tr>
-                <th className="px-5 py-3">Skill Name</th>
-                <th className="px-5 py-3">Category</th>
-                <th className="px-5 py-3">Proficiency</th>
-                <th className="px-5 py-3">Description</th>
-                <th className="px-5 py-3 text-right">Actions</th>
+                <th className="px-6 py-3.5">Skill Name</th>
+                <th className="px-6 py-3.5">Category</th>
+                <th className="px-6 py-3.5">Proficiency</th>
+                <th className="px-6 py-3.5">Description</th>
+                <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
               {skills.map((s) => (
-                <tr key={s._id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors">
-                  <td className="px-5 py-3 font-bold text-zinc-900 dark:text-white">
+                <tr key={s._id} className="hover:bg-slate-50/50 dark:hover:bg-nebula-800/40 transition-colors">
+                  <td className="px-6 py-3.5 font-bold text-slate-900 dark:text-white font-display text-sm">
                     {s.name}
                   </td>
-                  <td className="px-5 py-3 font-mono text-[11px] uppercase text-zinc-500">
-                    {s.category}
+                  <td className="px-6 py-3.5">
+                    <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-nebula-800 border border-slate-200 dark:border-white/10 uppercase">
+                      {s.category}
+                    </span>
                   </td>
-                  <td className="px-5 py-3 w-40">
+                  <td className="px-6 py-3.5 w-48">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-zinc-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                      <div className="flex-1 bg-slate-100 dark:bg-nebula-800 rounded-full h-1.5 overflow-hidden">
                         <div
-                          className="bg-blue-600 dark:bg-blue-500 h-full rounded-full"
+                          className="bg-aurora-cyan h-full rounded-full"
                           style={{ width: `${s.proficiency}%` }}
                         />
                       </div>
-                      <span className="font-mono text-[11px] text-zinc-500 min-w-[2.5rem]">
+                      <span className="font-mono text-[11px] text-aurora-cyan font-bold min-w-[2.5rem]">
                         {s.proficiency}%
                       </span>
                     </div>
                   </td>
-                  <td className="px-5 py-3 max-w-xs text-zinc-500 truncate">
+                  <td className="px-6 py-3.5 max-w-xs text-slate-500 truncate">
                     {s.description || '—'}
                   </td>
-                  <td className="px-5 py-3 text-right space-x-1.5">
+                  <td className="px-6 py-3.5 text-right space-x-2">
                     <button
                       onClick={() => openEditModal(s)}
                       type="button"
-                      className="p-1.5 rounded border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-                      title="Edit"
+                      className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-aurora-cyan text-slate-600 dark:text-slate-400 hover:text-aurora-cyan"
+                      title="Edit Skill"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(s._id, s.name)}
                       type="button"
-                      className="p-1.5 rounded border border-rose-500/20 text-rose-500 hover:bg-rose-500/10"
-                      title="Delete"
+                      className="p-1.5 rounded-lg border border-rose-500/20 hover:bg-rose-500/10 text-rose-500"
+                      title="Delete Skill"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -176,40 +178,40 @@ export const AdminSkills = () => {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-md rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-nebula-900 border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8">
             <button
               onClick={() => setModalOpen(false)}
               type="button"
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+              className="absolute top-6 right-6 p-1.5 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-nebula-800"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
-            <h2 className="font-display text-lg font-bold mb-1">
-              {editingId ? 'Edit Skill' : 'New Skill'}
+            <h2 className="font-display text-xl font-bold mb-1">
+              {editingId ? 'Edit Skill' : 'Add New Skill'}
             </h2>
-            <p className="text-xs text-zinc-500 mb-4">Set proficiency and details</p>
+            <p className="text-xs text-slate-500 mb-6">Specify technology details and proficiency rating</p>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Name *</label>
+                <label className="block font-mono text-slate-500 mb-1">Skill Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. React.js"
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  placeholder="e.g. React.js, Node.js, MongoDB"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Category</label>
+                <label className="block font-mono text-slate-500 mb-1">Category</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 >
                   <option value="frontend">Frontend</option>
                   <option value="backend">Backend</option>
@@ -221,8 +223,8 @@ export const AdminSkills = () => {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="font-mono text-zinc-500">Proficiency</label>
-                  <span className="font-mono text-zinc-700 dark:text-zinc-300 font-bold">{formData.proficiency}%</span>
+                  <label className="font-mono text-slate-500">Proficiency Rating</label>
+                  <span className="font-mono text-aurora-cyan font-bold">{formData.proficiency}%</span>
                 </div>
                 <input
                   type="range"
@@ -230,35 +232,46 @@ export const AdminSkills = () => {
                   max="100"
                   value={formData.proficiency}
                   onChange={(e) => setFormData({ ...formData, proficiency: Number(e.target.value) })}
-                  className="w-full accent-blue-600 cursor-pointer"
+                  className="w-full accent-aurora-cyan cursor-pointer"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-zinc-500 mb-1">Description</label>
+                <label className="block font-mono text-slate-500 mb-1">Icon Identifier</label>
+                <input
+                  type="text"
+                  value={formData.icon}
+                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                  placeholder="React, Database, Server, Cloud, Code..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-mono text-slate-500 mb-1">Brief Description</label>
                 <input
                   type="text"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Hooks, context, virtual dom..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                  placeholder="Hooks, Redux, Context, Performance..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-sm"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg text-zinc-500"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-1.5 rounded-lg font-medium font-mono text-xs text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:opacity-90 disabled:opacity-50"
+                  className="px-6 py-2 rounded-xl font-medium font-mono text-white bg-aurora-cyan hover:opacity-90 shadow-md transition-all disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : editingId ? 'Update' : 'Create'}
+                  {submitting ? 'Saving...' : editingId ? 'Update Skill' : 'Create Skill'}
                 </button>
               </div>
             </form>

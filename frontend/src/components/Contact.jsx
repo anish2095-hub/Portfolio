@@ -11,7 +11,9 @@ import {
   Twitter,
   Youtube,
   Instagram,
+  Sparkles,
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { messageAPI } from '../services/api';
 import { usePortfolio } from '../context/PortfolioContext';
 
@@ -32,59 +34,77 @@ export const Contact = () => {
     if (error) setError(null);
   };
 
-  const handleSubmit = (e) => {
-    // Do NOT call e.preventDefault() — let the native HTML <form> submit directly to FormSubmit via the hidden iframe!
+  const handleSubmit = async (e) => {
     setLoading(true);
     setError(null);
 
-    // Save in backend DB asynchronously for Admin Panel (non-blocking)
-    messageAPI.send(formData).catch((err) => {
-      console.warn('Backend message save skipped:', err.message);
-    });
+    // Save to MERN backend API
+    try {
+      await messageAPI.send(formData);
+    } catch (err) {
+      console.warn('Backend message save notice:', err);
+    }
 
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1200);
+    setSuccess(true);
+    setLoading(false);
+    setFormData({ name: '', email: '', subject: '', message: '' });
+
+    // Trigger confetti celebration!
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
+    });
   };
 
   const socialLinks = profile?.socialLinks || {};
 
   return (
-    <section id="contact" className="py-24 border-t border-[#0284c7]/10 dark:border-[#38bdf8]/10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="py-24 relative overflow-hidden">
+      {/* Ambient background glow */}
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-aurora-cyan/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col items-start mb-12">
-          <span className="font-mono text-xs uppercase tracking-widest text-[#0284c7] dark:text-[#38bdf8] font-semibold mb-1">
-            // Get In Touch
+        <div className="flex flex-col items-center text-center mb-16">
+          <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
+            // Start A Conversation
           </span>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0c2333] dark:text-[#f0f9ff]">
-            Let's Work Together
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Get In Touch
           </h2>
+          <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
+          <p className="text-slate-600 dark:text-slate-400 max-w-xl text-sm sm:text-base mt-4">
+            Have a project in mind, looking for a new team member, or just want to connect? My inbox is always open!
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          {/* Left Column */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left: Contact Info */}
           <div className="lg:col-span-5 flex flex-col space-y-6">
-            <p className="text-sm sm:text-base text-[#436174] dark:text-[#93b4cb] leading-relaxed">
-              Have a web project, full-stack opportunity, or question in mind? Send a message and let's build something exceptional together.
+            <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+              Let's talk about your next project or role
+            </h3>
+
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+              I'm actively looking for opportunities to contribute high performance software engineering, clean architectures, and modern user experiences.
             </p>
 
-            <div className="space-y-3.5">
+            <div className="space-y-4 pt-2">
               {profile?.email && (
                 <a
                   href={`mailto:${profile.email}`}
-                  className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#102638] border border-[#0284c7]/10 dark:border-[#38bdf8]/10 hover:border-[#0284c7] dark:hover:border-[#38bdf8] shadow-sky-sm hover:shadow-sky-md transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm transition-all group"
                 >
-                  <div className="p-2.5 rounded-lg bg-[#0284c7]/10 dark:bg-[#38bdf8]/15 text-[#0284c7] dark:text-[#38bdf8]">
+                  <div className="p-3 rounded-xl bg-aurora-cyan/10 text-aurora-cyan group-hover:bg-aurora-cyan group-hover:text-nebula-950 transition-colors">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono uppercase text-[#7895a7] dark:text-[#62839b]">
-                      Email
+                  <div>
+                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
+                      Email Address
                     </span>
-                    <span className="text-sm font-semibold text-[#0c2333] dark:text-[#f0f9ff] group-hover:text-[#0284c7] dark:group-hover:text-[#38bdf8] transition-colors">
+                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-aurora-cyan transition-colors">
                       {profile.email}
                     </span>
                   </div>
@@ -92,15 +112,15 @@ export const Contact = () => {
               )}
 
               {profile?.phone && (
-                <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#102638] border border-[#0284c7]/10 dark:border-[#38bdf8]/10 shadow-sky-sm">
-                  <div className="p-2.5 rounded-lg bg-[#0284c7]/10 dark:bg-[#38bdf8]/15 text-[#0284c7] dark:text-[#38bdf8]">
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
+                  <div className="p-3 rounded-xl bg-aurora-violet/10 text-aurora-violet">
                     <Phone className="w-5 h-5" />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono uppercase text-[#7895a7] dark:text-[#62839b]">
-                      Phone
+                  <div>
+                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
+                      Phone Number
                     </span>
-                    <span className="text-sm font-semibold text-[#0c2333] dark:text-[#f0f9ff]">
+                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                       {profile.phone}
                     </span>
                   </div>
@@ -108,15 +128,15 @@ export const Contact = () => {
               )}
 
               {profile?.location && (
-                <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#102638] border border-[#0284c7]/10 dark:border-[#38bdf8]/10 shadow-sky-sm">
-                  <div className="p-2.5 rounded-lg bg-[#0284c7]/10 dark:bg-[#38bdf8]/15 text-[#0284c7] dark:text-[#38bdf8]">
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
+                  <div className="p-3 rounded-xl bg-rose-500/10 text-rose-500">
                     <MapPin className="w-5 h-5" />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono uppercase text-[#7895a7] dark:text-[#62839b]">
+                  <div>
+                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
                       Location
                     </span>
-                    <span className="text-sm font-semibold text-[#0c2333] dark:text-[#f0f9ff]">
+                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                       {profile.location}
                     </span>
                   </div>
@@ -125,20 +145,19 @@ export const Contact = () => {
             </div>
 
             {/* Social Icons */}
-            <div>
-              <span className="text-[11px] font-mono uppercase text-[#7895a7] dark:text-[#62839b] block mb-3 font-semibold">
-                Connect Online
+            <div className="pt-4">
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-3">
+                Connect Across The Web
               </span>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3">
                 {socialLinks.github && (
                   <a
                     href={socialLinks.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-full bg-white dark:bg-[#102638] text-[#436174] dark:text-[#93b4cb] hover:text-white hover:bg-[#0284c7] dark:hover:bg-[#38bdf8] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 hover:-translate-y-0.5 transition-all shadow-sky-sm"
-                    title="GitHub"
+                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-slate-900 transition-all transform hover:-translate-y-1 shadow-sm"
                   >
-                    <Github className="w-4 h-4" />
+                    <Github className="w-5 h-5" />
                   </a>
                 )}
                 {socialLinks.linkedin && (
@@ -146,10 +165,9 @@ export const Contact = () => {
                     href={socialLinks.linkedin}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-full bg-white dark:bg-[#102638] text-[#436174] dark:text-[#93b4cb] hover:text-white hover:bg-[#0284c7] dark:hover:bg-[#38bdf8] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 hover:-translate-y-0.5 transition-all shadow-sky-sm"
-                    title="LinkedIn"
+                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-[#0077b5] transition-all transform hover:-translate-y-1 shadow-sm"
                   >
-                    <Linkedin className="w-4 h-4" />
+                    <Linkedin className="w-5 h-5" />
                   </a>
                 )}
                 {socialLinks.twitter && (
@@ -157,10 +175,9 @@ export const Contact = () => {
                     href={socialLinks.twitter}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-full bg-white dark:bg-[#102638] text-[#436174] dark:text-[#93b4cb] hover:text-white hover:bg-[#0284c7] dark:hover:bg-[#38bdf8] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 hover:-translate-y-0.5 transition-all shadow-sky-sm"
-                    title="Twitter / X"
+                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-slate-900 transition-all transform hover:-translate-y-1 shadow-sm"
                   >
-                    <Twitter className="w-4 h-4" />
+                    <Twitter className="w-5 h-5" />
                   </a>
                 )}
                 {socialLinks.youtube && (
@@ -168,10 +185,9 @@ export const Contact = () => {
                     href={socialLinks.youtube}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-full bg-white dark:bg-[#102638] text-[#436174] dark:text-[#93b4cb] hover:text-white hover:bg-red-600 border border-[#0284c7]/15 dark:border-[#38bdf8]/15 hover:-translate-y-0.5 transition-all shadow-sky-sm"
-                    title="YouTube"
+                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-[#ff0000] transition-all transform hover:-translate-y-1 shadow-sm"
                   >
-                    <Youtube className="w-4 h-4" />
+                    <Youtube className="w-5 h-5" />
                   </a>
                 )}
                 {socialLinks.instagram && (
@@ -179,36 +195,35 @@ export const Contact = () => {
                     href={socialLinks.instagram}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-full bg-white dark:bg-[#102638] text-[#436174] dark:text-[#93b4cb] hover:text-white hover:bg-pink-600 border border-[#0284c7]/15 dark:border-[#38bdf8]/15 hover:-translate-y-0.5 transition-all shadow-sky-sm"
-                    title="Instagram"
+                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-rose-600 transition-all transform hover:-translate-y-1 shadow-sm"
                   >
-                    <Instagram className="w-4 h-4" />
+                    <Instagram className="w-5 h-5" />
                   </a>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Right Column: Form */}
+          {/* Right: Interactive Form */}
           <div className="lg:col-span-7">
-            <div className="p-7 sm:p-8 rounded-2xl bg-white dark:bg-[#102638] border border-[#0284c7]/12 dark:border-[#38bdf8]/15 shadow-sky-md">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-xl">
               {success ? (
-                <div className="py-10 flex flex-col items-center text-center space-y-3">
-                  <div className="w-14 h-14 rounded-full bg-[#0284c7]/10 dark:bg-[#38bdf8]/15 text-[#0284c7] dark:text-[#38bdf8] flex items-center justify-center">
-                    <CheckCircle2 className="w-7 h-7" />
+                <div className="py-12 flex flex-col items-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                    <CheckCircle2 className="w-10 h-10" />
                   </div>
-                  <h4 className="font-display text-xl font-bold text-[#0c2333] dark:text-[#f0f9ff]">
-                    Message Received!
+                  <h4 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+                    Message Sent Successfully!
                   </h4>
-                  <p className="text-[#436174] dark:text-[#93b4cb] text-sm max-w-sm">
-                    Thank you for reaching out. I'll get back to you shortly!
+                  <p className="text-slate-600 dark:text-slate-300 max-w-md text-sm">
+                    Thank you for reaching out. I've received your note and will get back to you as soon as possible.
                   </p>
                   <button
                     onClick={() => setSuccess(false)}
                     type="button"
-                    className="mt-3 px-5 py-2 rounded-lg text-xs font-mono font-medium border border-[#0284c7]/20 dark:border-[#38bdf8]/20 hover:bg-[#e8f3fa] dark:hover:bg-[#08141e] transition-colors"
+                    className="mt-4 px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-aurora-cyan border border-aurora-cyan/30 hover:bg-aurora-cyan/10 transition-colors"
                   >
-                    Send Another Note
+                    Send Another Message
                   </button>
                 </div>
               ) : (
@@ -224,9 +239,8 @@ export const Contact = () => {
                     method="POST"
                     target="formsubmit_iframe"
                     onSubmit={handleSubmit}
-                    className="space-y-4 text-xs"
+                    className="space-y-5"
                   >
-                    {/* FormSubmit configuration fields */}
                     <input type="hidden" name="_template" value="table" />
                     <input type="hidden" name="_captcha" value="false" />
                     <input
@@ -235,15 +249,15 @@ export const Contact = () => {
                       value={formData.subject || `New Portfolio Message from ${formData.name || 'Visitor'}`}
                     />
                     {error && (
-                      <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                        <span>{error}</span>
-                      </div>
-                    )}
+                    <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                      <span>{error}</span>
+                    </div>
+                  )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="block font-mono text-[#7895a7] dark:text-[#62839b] mb-1.5 font-medium">
+                      <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
                         Your Name *
                       </label>
                       <input
@@ -253,12 +267,12 @@ export const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="John Doe"
-                        className="w-full px-4 py-3 rounded-lg bg-[#f4f9fd] dark:bg-[#08141e] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 text-[#0c2333] dark:text-[#f0f9ff] placeholder-[#7895a7] text-xs sm:text-sm focus:outline-none focus:border-[#0284c7] dark:focus:border-[#38bdf8] transition-colors"
+                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-mono text-[#7895a7] dark:text-[#62839b] mb-1.5 font-medium">
+                      <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
                         Your Email *
                       </label>
                       <input
@@ -268,13 +282,13 @@ export const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="john@example.com"
-                        className="w-full px-4 py-3 rounded-lg bg-[#f4f9fd] dark:bg-[#08141e] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 text-[#0c2333] dark:text-[#f0f9ff] placeholder-[#7895a7] text-xs sm:text-sm focus:outline-none focus:border-[#0284c7] dark:focus:border-[#38bdf8] transition-colors"
+                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block font-mono text-[#7895a7] dark:text-[#62839b] mb-1.5 font-medium">
+                    <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
                       Subject
                     </label>
                     <input
@@ -282,42 +296,45 @@ export const Contact = () => {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="Project Inquiry / Opportunity"
-                      className="w-full px-4 py-3 rounded-lg bg-[#f4f9fd] dark:bg-[#08141e] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 text-[#0c2333] dark:text-[#f0f9ff] placeholder-[#7895a7] text-xs sm:text-sm focus:outline-none focus:border-[#0284c7] dark:focus:border-[#38bdf8] transition-colors"
+                      placeholder="Project Inquiry / Job Opportunity"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-mono text-[#7895a7] dark:text-[#62839b] mb-1.5 font-medium">
-                      Message *
+                    <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      Your Message *
                     </label>
                     <textarea
                       name="message"
-                      rows={4}
+                      rows={5}
                       required
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Hi! I'd like to collaborate on..."
-                      className="w-full px-4 py-3 rounded-lg bg-[#f4f9fd] dark:bg-[#08141e] border border-[#0284c7]/15 dark:border-[#38bdf8]/15 text-[#0c2333] dark:text-[#f0f9ff] placeholder-[#7895a7] text-xs sm:text-sm focus:outline-none focus:border-[#0284c7] dark:focus:border-[#38bdf8] transition-colors resize-y"
+                      placeholder="Tell me about your idea, timeline, or requirements..."
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all resize-y"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg font-semibold text-xs sm:text-sm font-mono text-white bg-[#0284c7] hover:bg-[#0369a1] dark:bg-[#38bdf8] dark:hover:bg-[#7dd3fc] dark:text-[#08141e] shadow-sky-sm hover:shadow-sky-md hover:-translate-y-0.5 transition-all disabled:opacity-50"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose hover:opacity-95 shadow-lg shadow-aurora-cyan/20 transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
-                      <span>Sending Message...</span>
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Sending Message...</span>
+                      </span>
                     ) : (
                       <>
-                        <Send className="w-4 h-4 text-[#e0f2fe] dark:text-[#08141e]" />
+                        <Send className="w-4 h-4" />
                         <span>Send Message</span>
                       </>
                     )}
                   </button>
-                  </form>
-                </>
+                </form>
+              </>
               )}
             </div>
           </div>

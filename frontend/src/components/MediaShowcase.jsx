@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Youtube, ExternalLink } from 'lucide-react';
+import { Play, Youtube, ExternalLink, Video } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 
 export const MediaShowcase = () => {
@@ -8,31 +8,35 @@ export const MediaShowcase = () => {
   if (!media || media.length === 0) return null;
 
   return (
-    <section id="media" className="py-24 border-t border-[#0284c7]/10 dark:border-[#38bdf8]/10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="media" className="py-24 relative bg-slate-50/50 dark:bg-nebula-900/40 border-y border-slate-200 dark:border-white/5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col items-start mb-8">
-          <span className="font-mono text-xs uppercase tracking-widest text-[#0284c7] dark:text-[#38bdf8] font-semibold mb-1">
-            // Tutorials & Content
+        <div className="flex flex-col items-center text-center mb-12">
+          <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
+            // Tutorials & Creator Content
           </span>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0c2333] dark:text-[#f0f9ff]">
-            Media & Videos
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Media & Creative Showcase
           </h2>
+          <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
+          <p className="text-slate-600 dark:text-slate-400 max-w-xl text-sm sm:text-base mt-4">
+            Educational videos, architectural deep dives, and tech insights.
+          </p>
         </div>
 
-        {/* Channel Banner with soft light sky gradient */}
+        {/* Channel Banner */}
         {profile?.socialLinks?.youtube && (
-          <div className="mb-10 p-6 rounded-2xl bg-gradient-to-r from-[#0284c7]/10 via-[#06b6d4]/10 to-[#38bdf8]/10 dark:from-[#38bdf8]/15 dark:to-[#67e8f9]/15 border border-[#0284c7]/15 dark:border-[#38bdf8]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-sky-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center flex-shrink-0 shadow-md">
-                <Youtube className="w-6 h-6" />
+          <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-rose-500/10 via-aurora-violet/10 to-aurora-cyan/10 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="w-14 h-14 rounded-2xl bg-red-600 text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-500/30">
+                <Youtube className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-[#0c2333] dark:text-[#f0f9ff] text-base sm:text-lg">
-                  YouTube Coding Tutorials & Walkthroughs
+                <h3 className="font-display font-bold text-slate-900 dark:text-white text-lg">
+                  Watch Coding Tutorials & Walkthroughs
                 </h3>
-                <p className="text-xs sm:text-sm text-[#436174] dark:text-[#93b4cb]">
-                  Full stack engineering tutorials, architectures, and technical deep-dives.
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  Sharing web development architectures, MERN tricks, and UI workflows.
                 </p>
               </div>
             </div>
@@ -41,10 +45,10 @@ export const MediaShowcase = () => {
               href={profile.socialLinks.youtube}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] dark:bg-[#38bdf8] dark:text-[#08141e] text-white text-xs font-mono font-medium shadow-sky-sm hover:shadow-sky-md transition-all flex-shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold shadow-md transition-colors flex-shrink-0"
             >
-              <span>Visit Channel</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <Youtube className="w-4 h-4" />
+              <span>Visit YouTube Channel</span>
             </a>
           </div>
         )}
@@ -57,9 +61,10 @@ export const MediaShowcase = () => {
               href={item.url}
               target="_blank"
               rel="noreferrer"
-              className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-[#102638] border border-[#0284c7]/12 dark:border-[#38bdf8]/15 hover:border-[#0284c7] dark:hover:border-[#38bdf8] hover:-translate-y-1.5 transition-all duration-300 shadow-sky-sm hover:shadow-sky-md"
+              className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm hover:shadow-xl dark:shadow-none hover:-translate-y-1.5 transition-all duration-300"
             >
-              <div className="relative aspect-video bg-[#e8f3fa] dark:bg-[#08141e] overflow-hidden">
+              {/* Thumbnail Container with Play Overlay */}
+              <div className="relative aspect-video bg-slate-100 dark:bg-nebula-800 overflow-hidden">
                 <img
                   src={
                     item.thumbnailUrl ||
@@ -69,27 +74,33 @@ export const MediaShowcase = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-[#08141e]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-white/95 text-[#0c2333] flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
-                    <Play className="w-5 h-5 fill-current ml-0.5 text-[#0284c7]" />
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                    <Play className="w-5 h-5 fill-current ml-0.5" />
                   </div>
+                </div>
+
+                <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] font-mono text-white">
+                  HD
                 </div>
               </div>
 
+              {/* Body */}
               <div className="p-5 flex flex-col flex-1">
-                <h4 className="font-display font-bold text-[#0c2333] dark:text-[#f0f9ff] text-sm mb-1.5 line-clamp-2">
+                <h4 className="font-display font-bold text-slate-900 dark:text-white text-base mb-2 group-hover:text-aurora-cyan transition-colors line-clamp-2">
                   {item.title}
                 </h4>
 
                 {item.caption && (
-                  <p className="text-xs text-[#436174] dark:text-[#93b4cb] line-clamp-2 leading-relaxed mb-3">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
                     {item.caption}
                   </p>
                 )}
 
-                <div className="mt-auto flex items-center text-xs font-mono text-[#0284c7] dark:text-[#38bdf8] font-medium gap-1">
+                <div className="mt-auto flex items-center text-xs font-mono text-aurora-cyan font-medium gap-1">
                   <span>Watch Video</span>
-                  <ExternalLink className="w-3 h-3" />
+                  <ExternalLink className="w-3.5 h-3.5" />
                 </div>
               </div>
             </a>
