@@ -18,6 +18,15 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Enforce Dark Mode -->
+    <script>
+      try {
+        localStorage.setItem('portfolio_theme', 'dark');
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      } catch (e) {}
+    </script>
   </head>
   <body class="bg-nebula-950 text-slate-100 font-sans antialiased selection:bg-aurora-cyan/20 selection:text-aurora-cyan">
     <div id="root"></div>

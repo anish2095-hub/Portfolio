@@ -4,9 +4,11 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
+    // Always default to dark mode
     const saved = localStorage.getItem('portfolio_theme');
-    if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark';
+    if (saved === 'dark') return 'dark';
+    localStorage.setItem('portfolio_theme', 'dark');
+    return 'dark';
   });
 
   useEffect(() => {

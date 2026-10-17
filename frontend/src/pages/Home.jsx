@@ -13,7 +13,7 @@ import { Footer } from '../components/Footer';
 
 export const Home = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-nebula-950 text-slate-900 dark:text-slate-100 selection:bg-aurora-cyan/20 selection:text-aurora-cyan transition-colors">
+    <div className="min-h-screen bg-nebula-950 text-slate-100 selection:bg-aurora-cyan/20 selection:text-aurora-cyan transition-colors">
       <ScrollProgress />
       <Navbar />
       <main>
