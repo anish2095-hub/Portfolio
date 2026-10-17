@@ -44,7 +44,7 @@ export const Hero = () => {
   }, [displayText, isDeleting, roleIndex, roles]);
 
   return (
-    <section className="relative min-h-screen pt-28 pb-16 flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen pt-28 pb-16 flex items-center justify-center overflow-hidden bg-nebula-950">
       {/* Ambient background glow orbs */}
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-aurora-cyan/15 rounded-full blur-[120px] pointer-events-none aurora-orb" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-aurora-violet/15 rounded-full blur-[130px] pointer-events-none aurora-orb" />

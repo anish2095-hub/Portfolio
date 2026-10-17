@@ -6,7 +6,7 @@ export const Certificates = () => {
   const { certificates } = usePortfolio();
 
   return (
-    <section id="certificates" className="py-24 relative overflow-hidden">
+    <section id="certificates" className="py-24 relative overflow-hidden bg-nebula-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">

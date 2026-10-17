@@ -86,18 +86,18 @@ export const Skills = () => {
       : skills.filter((s) => s.category === activeCategory);
 
   return (
-    <section id="skills" className="py-24 relative bg-slate-50/50 dark:bg-nebula-900/40 border-y border-slate-200 dark:border-white/5">
+    <section id="skills" className="py-24 relative bg-nebula-950 border-y border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-12">
           <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
             // My Tech Arsenal
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
             Skills & Expertise
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
-          <p className="text-slate-600 dark:text-slate-400 max-w-xl text-sm sm:text-base mt-4">
+          <p className="text-slate-400 max-w-xl text-sm sm:text-base mt-4">
             A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.
           </p>
         </div>

@@ -61,7 +61,7 @@ export const Contact = () => {
   const socialLinks = profile?.socialLinks || {};
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
+    <section id="contact" className="py-24 relative overflow-hidden bg-nebula-950">
       {/* Ambient background glow */}
       <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-aurora-cyan/10 rounded-full blur-[120px] pointer-events-none" />
 
