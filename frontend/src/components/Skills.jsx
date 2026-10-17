@@ -112,7 +112,7 @@ export const Skills = () => {
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                 activeCategory === cat.id
                   ? 'bg-gradient-to-r from-aurora-cyan to-aurora-violet text-white shadow-md shadow-aurora-cyan/20 scale-105'
-                  : 'bg-white dark:bg-nebula-850 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10'
+                  : 'bg-nebula-900 text-slate-400 hover:text-white border border-white/10 hover:border-aurora-cyan/30'
               }`}
             >
               {cat.name}
@@ -127,7 +127,7 @@ export const Skills = () => {
             return (
               <div
                 key={skill._id || skill.name}
-                className="group relative p-6 rounded-2xl bg-white dark:bg-nebula-850/80 border border-slate-200/80 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm hover:shadow-xl dark:shadow-none hover:-translate-y-1.5 transition-all duration-300"
+                className="group relative p-6 rounded-2xl bg-nebula-900/90 border border-white/10 hover:border-aurora-cyan/40 hover:bg-nebula-850/90 hover:-translate-y-1.5 transition-all duration-300 shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -135,10 +135,10 @@ export const Skills = () => {
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-display font-bold text-slate-900 dark:text-white text-base">
+                      <h4 className="font-display font-bold text-white text-base">
                         {skill.name}
                       </h4>
-                      <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      <span className="font-mono text-[11px] text-slate-400 uppercase tracking-wider">
                         {skill.category}
                       </span>
                     </div>
@@ -149,13 +149,13 @@ export const Skills = () => {
                 </div>
 
                 {skill.description && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-slate-400 mb-4 line-clamp-2 leading-relaxed">
                     {skill.description}
                   </p>
                 )}
 
                 {/* Animated Proficiency Bar */}
-                <div className="w-full bg-slate-100 dark:bg-nebula-800 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-nebula-800 rounded-full h-2 overflow-hidden">
                   <div
                     className="bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose h-full rounded-full transition-all duration-1000 ease-out origin-left"
                     style={{ width: `${skill.proficiency}%` }}

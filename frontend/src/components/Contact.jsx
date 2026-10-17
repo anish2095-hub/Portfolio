@@ -71,11 +71,11 @@ export const Contact = () => {
           <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
             // Start A Conversation
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
             Get In Touch
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
-          <p className="text-slate-600 dark:text-slate-400 max-w-xl text-sm sm:text-base mt-4">
+          <p className="text-slate-400 max-w-xl text-sm sm:text-base mt-4">
             Have a project in mind, looking for a new team member, or just want to connect? My inbox is always open!
           </p>
         </div>
@@ -83,11 +83,11 @@ export const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left: Contact Info */}
           <div className="lg:col-span-5 flex flex-col space-y-6">
-            <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+            <h3 className="font-display text-2xl font-bold text-white">
               Let's talk about your next project or role
             </h3>
 
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
               I'm actively looking for opportunities to contribute high performance software engineering, clean architectures, and modern user experiences.
             </p>
 
@@ -95,16 +95,16 @@ export const Contact = () => {
               {profile?.email && (
                 <a
                   href={`mailto:${profile.email}`}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-nebula-900 border border-white/10 hover:border-aurora-cyan/40 shadow-md transition-all group"
                 >
-                  <div className="p-3 rounded-xl bg-aurora-cyan/10 text-aurora-cyan group-hover:bg-aurora-cyan group-hover:text-nebula-950 transition-colors">
+                  <div className="p-3 rounded-xl bg-aurora-cyan/15 text-aurora-cyan group-hover:bg-aurora-cyan group-hover:text-nebula-950 transition-colors">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
                       Email Address
                     </span>
-                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-aurora-cyan transition-colors">
+                    <span className="text-sm font-semibold text-white group-hover:text-aurora-cyan transition-colors">
                       {profile.email}
                     </span>
                   </div>
@@ -112,15 +112,15 @@ export const Contact = () => {
               )}
 
               {profile?.phone && (
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
-                  <div className="p-3 rounded-xl bg-aurora-violet/10 text-aurora-violet">
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-nebula-900 border border-white/10 shadow-md">
+                  <div className="p-3 rounded-xl bg-aurora-violet/15 text-aurora-violet">
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
                       Phone Number
                     </span>
-                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    <span className="text-sm font-semibold text-white">
                       {profile.phone}
                     </span>
                   </div>
@@ -128,15 +128,15 @@ export const Contact = () => {
               )}
 
               {profile?.location && (
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm">
-                  <div className="p-3 rounded-xl bg-rose-500/10 text-rose-500">
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-nebula-900 border border-white/10 shadow-md">
+                  <div className="p-3 rounded-xl bg-rose-500/15 text-rose-400">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block">
                       Location
                     </span>
-                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    <span className="text-sm font-semibold text-white">
                       {profile.location}
                     </span>
                   </div>
@@ -155,7 +155,7 @@ export const Contact = () => {
                     href={socialLinks.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-slate-900 transition-all transform hover:-translate-y-1 shadow-sm"
+                    className="p-3 rounded-xl bg-nebula-900 text-slate-300 hover:text-white hover:bg-nebula-800 border border-white/10 hover:border-aurora-cyan/40 transition-all transform hover:-translate-y-1 shadow-md"
                   >
                     <Github className="w-5 h-5" />
                   </a>
@@ -165,7 +165,7 @@ export const Contact = () => {
                     href={socialLinks.linkedin}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-[#0077b5] transition-all transform hover:-translate-y-1 shadow-sm"
+                    className="p-3 rounded-xl bg-nebula-900 text-slate-300 hover:text-white hover:bg-[#0077b5] border border-white/10 hover:border-[#0077b5] transition-all transform hover:-translate-y-1 shadow-md"
                   >
                     <Linkedin className="w-5 h-5" />
                   </a>
@@ -175,7 +175,7 @@ export const Contact = () => {
                     href={socialLinks.twitter}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-slate-900 transition-all transform hover:-translate-y-1 shadow-sm"
+                    className="p-3 rounded-xl bg-nebula-900 text-slate-300 hover:text-white hover:bg-nebula-800 border border-white/10 hover:border-white/30 transition-all transform hover:-translate-y-1 shadow-md"
                   >
                     <Twitter className="w-5 h-5" />
                   </a>
@@ -185,7 +185,7 @@ export const Contact = () => {
                     href={socialLinks.youtube}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-[#ff0000] transition-all transform hover:-translate-y-1 shadow-sm"
+                    className="p-3 rounded-xl bg-nebula-900 text-slate-300 hover:text-white hover:bg-rose-600 border border-white/10 hover:border-rose-500 transition-all transform hover:-translate-y-1 shadow-md"
                   >
                     <Youtube className="w-5 h-5" />
                   </a>
@@ -195,7 +195,7 @@ export const Contact = () => {
                     href={socialLinks.instagram}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl bg-slate-100 dark:bg-nebula-850 text-slate-600 dark:text-slate-300 hover:text-white hover:bg-rose-600 transition-all transform hover:-translate-y-1 shadow-sm"
+                    className="p-3 rounded-xl bg-nebula-900 text-slate-300 hover:text-white hover:bg-gradient-to-tr hover:from-amber-500 hover:to-rose-500 border border-white/10 hover:border-rose-400 transition-all transform hover:-translate-y-1 shadow-md"
                   >
                     <Instagram className="w-5 h-5" />
                   </a>
@@ -206,7 +206,7 @@ export const Contact = () => {
 
           {/* Right: Interactive Form */}
           <div className="lg:col-span-7">
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-xl">
+            <div className="p-6 sm:p-8 rounded-3xl bg-nebula-900/95 border border-white/10 shadow-2xl">
               {success ? (
                 <div className="py-12 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
@@ -257,7 +257,7 @@ export const Contact = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-mono font-medium text-slate-400 uppercase tracking-wider mb-2">
                         Your Name *
                       </label>
                       <input
@@ -267,12 +267,12 @@ export const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="John Doe"
-                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-mono font-medium text-slate-400 uppercase tracking-wider mb-2">
                         Your Email *
                       </label>
                       <input
@@ -282,13 +282,13 @@ export const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="john@example.com"
-                        className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-mono font-medium text-slate-400 uppercase tracking-wider mb-2">
                       Subject
                     </label>
                     <input
@@ -297,12 +297,12 @@ export const Contact = () => {
                       value={formData.subject}
                       onChange={handleChange}
                       placeholder="Project Inquiry / Job Opportunity"
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-mono font-medium text-slate-400 uppercase tracking-wider mb-2">
                       Your Message *
                     </label>
                     <textarea
@@ -312,7 +312,7 @@ export const Contact = () => {
                       value={formData.message}
                       onChange={handleChange}
                       placeholder="Tell me about your idea, timeline, or requirements..."
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all resize-y"
+                      className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all resize-y"
                     />
                   </div>
 

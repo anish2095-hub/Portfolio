@@ -55,13 +55,13 @@ export const Hero = () => {
           {/* Left Column: Introductions */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
             {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-nebula-850 border border-slate-300 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-nebula-900 border border-white/10 text-xs font-mono text-slate-300 mb-6 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               <span>{profile?.availability || 'Available for New Projects & Full-time Roles'}</span>
             </div>
 
             {/* Main Title */}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-4">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-4">
               Hi, I'm{' '}
               <span className="gradient-text-aurora">
                 {profile?.name || 'Anish Singh'}
@@ -69,14 +69,14 @@ export const Hero = () => {
             </h1>
 
             {/* Animated Typing Role */}
-            <div className="font-mono text-xl sm:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-6 flex items-center min-h-[2.5rem]">
+            <div className="font-mono text-xl sm:text-2xl font-semibold text-slate-300 mb-6 flex items-center min-h-[2.5rem]">
               <span className="text-aurora-cyan mr-2">&gt;</span>
-              <span className="text-slate-900 dark:text-white">{displayText}</span>
+              <span className="text-white">{displayText}</span>
               <span className="w-2.5 h-6 ml-1 bg-aurora-cyan animate-pulse inline-block" />
             </div>
 
             {/* Tagline / Summary */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed mb-8">
+            <p className="text-base sm:text-lg text-slate-400 max-w-xl leading-relaxed mb-8">
               {profile?.tagline ||
                 'Designing and engineering high-impact digital products, scalable web architectures, and fluid interactive experiences.'}
             </p>
@@ -93,7 +93,7 @@ export const Hero = () => {
 
               <a
                 href="#contact"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm text-slate-800 dark:text-white bg-slate-100 dark:bg-nebula-850 hover:bg-slate-200 dark:hover:bg-nebula-800 border border-slate-300 dark:border-white/10 transition-all duration-300 transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm text-white bg-nebula-900 hover:bg-nebula-850 border border-white/10 hover:border-aurora-cyan/40 transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 <Send className="w-4 h-4 text-aurora-cyan" />
                 <span>Contact Me</span>
@@ -104,7 +104,7 @@ export const Hero = () => {
                   href={profile.resumeUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-transparent hover:border-slate-300 dark:hover:border-white/10 transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-medium text-sm text-slate-300 hover:text-white border border-transparent hover:border-white/10 transition-all"
                 >
                   <Download className="w-4 h-4" />
                   <span>Resume</span>

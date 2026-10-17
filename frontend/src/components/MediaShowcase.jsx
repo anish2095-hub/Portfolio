@@ -15,27 +15,27 @@ export const MediaShowcase = () => {
           <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
             // Tutorials & Creator Content
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
             Media & Creative Showcase
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
-          <p className="text-slate-600 dark:text-slate-400 max-w-xl text-sm sm:text-base mt-4">
+          <p className="text-slate-400 max-w-xl text-sm sm:text-base mt-4">
             Educational videos, architectural deep dives, and tech insights.
           </p>
         </div>
 
         {/* Channel Banner */}
         {profile?.socialLinks?.youtube && (
-          <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-rose-500/10 via-aurora-violet/10 to-aurora-cyan/10 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+          <div className="mb-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-rose-500/10 via-aurora-violet/10 to-aurora-cyan/10 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-lg">
             <div className="flex items-center gap-4 text-center sm:text-left">
               <div className="w-14 h-14 rounded-2xl bg-red-600 text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-500/30">
                 <Youtube className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-slate-900 dark:text-white text-lg">
+                <h3 className="font-display font-bold text-white text-lg">
                   Watch Coding Tutorials & Walkthroughs
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                <p className="text-xs sm:text-sm text-slate-400">
                   Sharing web development architectures, MERN tricks, and UI workflows.
                 </p>
               </div>
@@ -61,10 +61,10 @@ export const MediaShowcase = () => {
               href={item.url}
               target="_blank"
               rel="noreferrer"
-              className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm hover:shadow-xl dark:shadow-none hover:-translate-y-1.5 transition-all duration-300"
+              className="group flex flex-col rounded-2xl overflow-hidden bg-nebula-900/90 border border-white/10 hover:border-aurora-cyan/40 hover:bg-nebula-850/90 shadow-lg hover:-translate-y-1.5 transition-all duration-300"
             >
               {/* Thumbnail Container with Play Overlay */}
-              <div className="relative aspect-video bg-slate-100 dark:bg-nebula-800 overflow-hidden">
+              <div className="relative aspect-video bg-nebula-800 overflow-hidden">
                 <img
                   src={
                     item.thumbnailUrl ||
@@ -88,12 +88,12 @@ export const MediaShowcase = () => {
 
               {/* Body */}
               <div className="p-5 flex flex-col flex-1">
-                <h4 className="font-display font-bold text-slate-900 dark:text-white text-base mb-2 group-hover:text-aurora-cyan transition-colors line-clamp-2">
+                <h4 className="font-display font-bold text-white text-base mb-2 group-hover:text-aurora-cyan transition-colors line-clamp-2">
                   {item.title}
                 </h4>
 
                 {item.caption && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-4">
                     {item.caption}
                   </p>
                 )}

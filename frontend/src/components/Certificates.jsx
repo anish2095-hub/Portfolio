@@ -13,7 +13,7 @@ export const Certificates = () => {
           <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
             // Validated Credentials
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
             Licenses & Certifications
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
@@ -24,9 +24,9 @@ export const Certificates = () => {
           {certificates.map((cert) => (
             <div
               key={cert._id || cert.title}
-              className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm hover:shadow-xl dark:shadow-none hover:-translate-y-1.5 transition-all duration-300"
+              className="group flex flex-col rounded-2xl overflow-hidden bg-nebula-900/90 border border-white/10 hover:border-aurora-cyan/40 hover:bg-nebula-850/90 shadow-lg hover:-translate-y-1.5 transition-all duration-300"
             >
-              <div className="relative aspect-[4/3] bg-slate-100 dark:bg-nebula-800 overflow-hidden">
+              <div className="relative aspect-[4/3] bg-nebula-800 overflow-hidden">
                 <img
                   src={
                     cert.image ||
@@ -49,11 +49,11 @@ export const Certificates = () => {
                   {cert.issuer}
                 </span>
 
-                <h4 className="font-display font-bold text-slate-900 dark:text-white text-base mb-2 group-hover:text-aurora-cyan transition-colors">
+                <h4 className="font-display font-bold text-white text-base mb-2 group-hover:text-aurora-cyan transition-colors">
                   {cert.title}
                 </h4>
 
-                <div className="mt-auto pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <div className="mt-auto pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
                   <span className="font-mono">{cert.issueDate}</span>
 
                   {cert.credentialUrl ? (

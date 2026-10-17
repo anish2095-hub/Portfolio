@@ -48,7 +48,7 @@ export const Navbar = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/80 dark:bg-nebula-950/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10 shadow-sm dark:shadow-2xl py-3.5'
+          ? 'bg-nebula-950/85 backdrop-blur-md border-b border-white/10 shadow-2xl py-3.5'
           : 'bg-transparent py-5'
       }`}
     >
@@ -56,26 +56,26 @@ export const Navbar = () => {
         {/* Brand Logo */}
         <Link
           to="/"
-          className="group flex items-center gap-2.5 font-display font-bold text-xl tracking-tight text-slate-900 dark:text-white"
+          className="group flex items-center gap-2.5 font-display font-bold text-xl tracking-tight text-white"
         >
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-aurora-cyan via-aurora-violet to-aurora-rose p-[1.5px] transition-transform duration-300 group-hover:scale-105">
-            <div className="w-full h-full rounded-[10px] bg-slate-100 dark:bg-nebula-900 flex items-center justify-center font-mono text-sm font-semibold text-slate-800 dark:text-aurora-cyan">
+            <div className="w-full h-full rounded-[10px] bg-nebula-900 flex items-center justify-center font-mono text-sm font-semibold text-aurora-cyan">
               {nameInitials}
             </div>
           </div>
           <span className="flex items-center gap-1">
-            <span>{profile?.name ? profile.name.split(' ')[0] : 'Alex'}</span>
+            <span>{profile?.name ? profile.name.split(' ')[0] : 'Anish'}</span>
             <span className="text-aurora-cyan font-mono text-sm">.dev</span>
           </span>
         </Link>
 
         {/* Desktop Links */}
-        <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
           {navLinks.map((link) => (
             <button
               key={link.name}
               onClick={() => handleNavClick(link.href)}
-              className="relative py-1 hover:text-aurora-cyan dark:hover:text-aurora-cyan transition-colors group text-left"
+              className="relative py-1 hover:text-aurora-cyan transition-colors group text-left"
             >
               {link.name}
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-aurora-cyan to-aurora-violet transition-all duration-300 group-hover:w-full" />
@@ -83,24 +83,29 @@ export const Navbar = () => {
           ))}
         </nav>
 
-        {/* Actions: Theme Toggle & Admin Badge */}
-        <div className="flex items-center gap-3.5">
-          <ThemeToggle />
-
+        {/* Actions: Admin Badge & Let's Connect */}
+        <div className="flex items-center gap-3">
           <Link
             to="/admin"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-full border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-aurora-cyan hover:border-aurora-cyan dark:hover:border-aurora-cyan transition-all"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-full border border-white/10 text-slate-400 hover:text-aurora-cyan hover:border-aurora-cyan transition-all"
             title="Admin Management Panel"
           >
             <Shield className="w-3.5 h-3.5 text-aurora-cyan" />
             <span>Admin</span>
           </Link>
 
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-mono font-semibold text-white bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose rounded-full shadow-md shadow-aurora-cyan/20 hover:opacity-95 transition-all transform hover:-translate-y-0.5"
+          >
+            <span>Let's Connect</span>
+          </a>
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             type="button"
-            className="lg:hidden p-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-nebula-850 transition-colors"
+            className="lg:hidden p-2 rounded-lg text-slate-300 hover:bg-nebula-850 transition-colors"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

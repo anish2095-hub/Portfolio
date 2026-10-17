@@ -47,7 +47,7 @@ export const Projects = () => {
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
                 activeCategory === cat.id
                   ? 'bg-gradient-to-r from-aurora-cyan to-aurora-violet text-white shadow-md shadow-aurora-cyan/20 scale-105'
-                  : 'bg-white dark:bg-nebula-850 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10'
+                  : 'bg-nebula-900 text-slate-400 hover:text-white border border-white/10 hover:border-aurora-cyan/30'
               }`}
             >
               {cat.name}
@@ -60,10 +60,10 @@ export const Projects = () => {
           {filteredProjects.map((project) => (
             <div
               key={project._id || project.title}
-              className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 hover:border-aurora-cyan/40 shadow-sm hover:shadow-2xl dark:shadow-none hover:-translate-y-2 transition-all duration-300"
+              className="group flex flex-col rounded-2xl overflow-hidden bg-nebula-900/90 border border-white/10 hover:border-aurora-cyan/40 hover:bg-nebula-850/90 shadow-lg hover:-translate-y-2 transition-all duration-300"
             >
               {/* Cover Image Container */}
-              <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-nebula-800">
+              <div className="relative aspect-[16/10] overflow-hidden bg-nebula-800">
                 <img
                   src={
                     project.coverImage ||
@@ -95,12 +95,12 @@ export const Projects = () => {
               <div className="p-6 flex flex-col flex-1">
                 <h3
                   onClick={() => setSelectedProject(project)}
-                  className="font-display text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-aurora-cyan transition-colors cursor-pointer"
+                  className="font-display text-xl font-bold text-white mb-2 group-hover:text-aurora-cyan transition-colors cursor-pointer"
                 >
                   {project.title}
                 </h3>
 
-                <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed mb-4 flex-1">
+                <p className="text-sm text-slate-400 line-clamp-3 leading-relaxed mb-4 flex-1">
                   {project.summary}
                 </p>
 
@@ -110,7 +110,7 @@ export const Projects = () => {
                     {project.technologies.slice(0, 4).map((tech, tIdx) => (
                       <span
                         key={tIdx}
-                        className="px-2.5 py-0.5 rounded-md font-mono text-[11px] bg-slate-100 dark:bg-nebula-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/5"
+                        className="px-2.5 py-0.5 rounded-md font-mono text-[11px] bg-nebula-800 text-slate-300 border border-white/10"
                       >
                         {tech}
                       </span>
@@ -124,7 +124,7 @@ export const Projects = () => {
                 )}
 
                 {/* Action Links */}
-                <div className="flex items-center gap-3 pt-3 border-t border-slate-100 dark:border-white/5">
+                <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                   {project.liveUrl && (
                     <a
                       href={project.liveUrl}
@@ -142,7 +142,7 @@ export const Projects = () => {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-nebula-800 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 bg-nebula-800 hover:text-white border border-white/10 transition-colors"
                     >
                       <Github className="w-3.5 h-3.5" />
                       <span>Source</span>
