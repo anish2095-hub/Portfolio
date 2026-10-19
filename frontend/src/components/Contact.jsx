@@ -35,27 +35,58 @@ export const Contact = () => {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Save to MERN backend API
+    const submissionData = {
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject || `New Portfolio Message from ${formData.name}`,
+      message: formData.message,
+      _template: 'table',
+      _captcha: 'false',
+    };
+
     try {
-      await messageAPI.send(formData);
+      // 1. Send email directly to anishsingh2095@gmail.com using FormSubmit.co AJAX API
+      const fsPromise = fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      // 2. Also save to MERN backend API in parallel
+      const backendPromise = messageAPI.send(formData).catch((err) => {
+        console.warn('Backend message save notice:', err);
+      });
+
+      const [fsResult] = await Promise.allSettled([fsPromise, backendPromise]);
+
+      if (fsResult.status === 'fulfilled') {
+        const data = await fsResult.value.json().catch(() => ({}));
+        console.log('FormSubmit API response:', data);
+      }
+
+      setSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      // Trigger confetti celebration!
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
+      });
     } catch (err) {
-      console.warn('Backend message save notice:', err);
+      console.error('Contact submit error:', err);
+      setError('Failed to send message. Please try again or email directly.');
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(true);
-    setLoading(false);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-
-    // Trigger confetti celebration!
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
-    });
   };
 
   const socialLinks = profile?.socialLinks || {};
@@ -212,11 +243,11 @@ export const Contact = () => {
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
-                  <h4 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+                  <h4 className="font-display text-2xl font-bold text-white">
                     Message Sent Successfully!
                   </h4>
-                  <p className="text-slate-600 dark:text-slate-300 max-w-md text-sm">
-                    Thank you for reaching out. I've received your note and will get back to you as soon as possible.
+                  <p className="text-slate-300 max-w-md text-sm">
+                    Thank you for reaching out. Your message has been sent directly to my email and I'll get back to you shortly!
                   </p>
                   <button
                     onClick={() => setSuccess(false)}
@@ -227,21 +258,7 @@ export const Contact = () => {
                   </button>
                 </div>
               ) : (
-                <>
-                  <iframe
-                    name="formsubmit_iframe"
-                    id="formsubmit_iframe"
-                    title="FormSubmit"
-                    className="hidden"
-                  />
-                  <form
-                    action="https://formsubmit.co/anishsingh2095@gmail.com"
-                    method="POST"
-                    target="formsubmit_iframe"
-                    onSubmit={handleSubmit}
-                    className="space-y-5"
-                  >
-                    <input type="hidden" name="_template" value="table" />
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <input type="hidden" name="_captcha" value="false" />
                     <input
                       type="hidden"
@@ -334,7 +351,6 @@ export const Contact = () => {
                     )}
                   </button>
                 </form>
-              </>
               )}
             </div>
           </div>
