@@ -22,7 +22,9 @@ export const HeroShowcase = ({ profile }) => {
   const email = profile?.email || 'anishsingh2095@gmail.com';
   const name = profile?.name || 'Anish Singh';
   const avatar =
-    profile?.avatar && !profile.avatar.includes('photo-1534528741775-53994a69daeb')
+    profile?.avatar &&
+    !profile.avatar.includes('photo-1534528741775-53994a69daeb') &&
+    !profile.avatar.includes('unsplash.com')
       ? profile.avatar
       : '/pfp.jpeg';
 

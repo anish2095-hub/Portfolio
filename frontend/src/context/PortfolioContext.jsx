@@ -77,10 +77,11 @@ export const PortfolioProvider = ({ children }) => {
       if (profileRes.status === 'fulfilled' && profileRes.value.data?.data) {
         const remoteProfile = profileRes.value.data.data;
         // Sanitize: ensure Alex Rivera or placeholder image doesn't overwrite Anish
-        const isPlaceholderName = remoteProfile.name === 'Alex Rivera';
+        const isPlaceholderName = !remoteProfile.name || remoteProfile.name === 'Alex Rivera';
         const isPlaceholderAvatar =
           !remoteProfile.avatar ||
-          remoteProfile.avatar.includes('photo-1534528741775-53994a69daeb');
+          remoteProfile.avatar.includes('photo-1534528741775-53994a69daeb') ||
+          remoteProfile.avatar.includes('unsplash.com');
 
         setProfile({
           ...defaultProfile,

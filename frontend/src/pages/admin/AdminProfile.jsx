@@ -32,21 +32,26 @@ export const AdminProfile = () => {
 
   useEffect(() => {
     if (profile) {
+      const cleanAvatar =
+        profile.avatar && !profile.avatar.includes('photo-1534528741775-53994a69daeb')
+          ? profile.avatar
+          : '/pfp.jpeg';
+
       setFormData({
-        name: profile.name || '',
-        title: profile.title || '',
+        name: profile.name || 'Anish Singh',
+        title: profile.title || 'Full Stack MERN Developer & Aspiring Software Engineer',
         typingRoles: Array.isArray(profile.typingRoles)
           ? profile.typingRoles.join(', ')
           : '',
         tagline: profile.tagline || '',
-        avatar: profile.avatar || '',
+        avatar: cleanAvatar,
         bio: profile.bio || '',
-        location: profile.location || '',
-        email: profile.email || '',
-        phone: profile.phone || '',
-        degree: profile.degree || '',
-        experienceYears: profile.experienceYears || '',
-        availability: profile.availability || '',
+        location: profile.location || 'Gaya ji, Bihar',
+        email: profile.email || 'anishsingh2095@gmail.com',
+        phone: profile.phone || '+91 9334398322',
+        degree: profile.degree || 'Diploma in Computer Science',
+        experienceYears: profile.experienceYears || '2+ years',
+        availability: profile.availability || 'Available for Full-time Roles & High-Impact Contracts',
         resumeUrl: profile.resumeUrl || '',
         github: profile.socialLinks?.github || '',
         linkedin: profile.socialLinks?.linkedin || '',
@@ -177,9 +182,16 @@ export const AdminProfile = () => {
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <div className="w-24 h-24 rounded-2xl overflow-hidden bg-slate-100 dark:bg-nebula-800 border border-slate-200 dark:border-white/10 flex-shrink-0">
               <img
-                src={formData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'}
+                src={
+                  formData.avatar && !formData.avatar.includes('photo-1534528741775-53994a69daeb')
+                    ? formData.avatar
+                    : '/pfp.jpeg'
+                }
                 alt="Avatar Preview"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = '/pfp.jpeg';
+                }}
               />
             </div>
             <div className="flex-1 w-full space-y-3">

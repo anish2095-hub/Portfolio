@@ -89,7 +89,9 @@ export const About = () => {
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-nebula-900 border border-white/15 shadow-2xl z-10">
                 <img
                   src={
-                    profile?.avatar && !profile.avatar.includes('photo-1534528741775-53994a69daeb')
+                    profile?.avatar &&
+                    !profile.avatar.includes('photo-1534528741775-53994a69daeb') &&
+                    !profile.avatar.includes('unsplash.com')
                       ? profile.avatar
                       : '/pfp.jpeg'
                   }
