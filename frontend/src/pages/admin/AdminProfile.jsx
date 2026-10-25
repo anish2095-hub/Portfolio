@@ -29,6 +29,39 @@ export const AdminProfile = () => {
     instagram: '',
   });
 
+  const [techPillars, setTechPillars] = useState([
+    {
+      id: 'frontend',
+      label: 'Frontend',
+      tagline: 'Pixel-perfect, high-performance UI',
+      metric: '60fps Fluid UI',
+      tools: 'React 19, TailwindCSS, Framer Motion, Vite, Responsive Design',
+    },
+    {
+      id: 'backend',
+      label: 'Backend',
+      tagline: 'Robust & secure API architecture',
+      metric: '<40ms API Latency',
+      tools: 'Node.js, Express.js, REST APIs, JWT Auth, Middleware',
+    },
+    {
+      id: 'database',
+      label: 'Database',
+      tagline: 'Scalable data models & indexing',
+      metric: 'Zero Data Loss',
+      tools: 'MongoDB Atlas, Mongoose ORM, Schema Design, Data Validation',
+    },
+    {
+      id: 'cloud',
+      label: 'Cloud & Deploy',
+      tagline: 'Continuous delivery & reliability',
+      metric: '99.9% Uptime',
+      tools: 'Vercel, Render, Git & GitHub, ImgBB / Cloudinary API',
+    },
+  ]);
+  const [telemetryText, setTelemetryText] = useState('Full-Stack Ready • Diploma CSE');
+  const [activePillarTab, setActivePillarTab] = useState('frontend');
+
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -65,6 +98,27 @@ export const AdminProfile = () => {
         youtube: profile.socialLinks?.youtube || '',
         instagram: profile.socialLinks?.instagram || '',
       });
+
+      if (profile.techPillars && profile.techPillars.length > 0) {
+        setTechPillars((prev) =>
+          prev.map((defPillar) => {
+            const found = profile.techPillars.find((p) => p.id === defPillar.id);
+            if (!found) return defPillar;
+            return {
+              id: defPillar.id,
+              label: found.label || defPillar.label,
+              tagline: found.tagline || defPillar.tagline,
+              metric: found.metric || defPillar.metric,
+              tools: Array.isArray(found.tools)
+                ? found.tools.join(', ')
+                : (found.tools || defPillar.tools),
+            };
+          })
+        );
+      }
+      if (profile.telemetryText) {
+        setTelemetryText(profile.telemetryText);
+      }
     }
   }, [profile]);
 
@@ -127,6 +181,20 @@ export const AdminProfile = () => {
           { label: 'GitHub Repositories', value: formData.statGithub || '80+' },
           { label: 'Happy Clients', value: formData.statClients || '20+' },
         ],
+        telemetryText,
+        techPillars: techPillars.map((p) => ({
+          id: p.id,
+          label: p.label,
+          tagline: p.tagline,
+          metric: p.metric,
+          tools:
+            typeof p.tools === 'string'
+              ? p.tools
+                  .split(',')
+                  .map((t) => t.trim())
+                  .filter(Boolean)
+              : p.tools,
+        })),
         socialLinks: {
           github: formData.github,
           linkedin: formData.linkedin,
@@ -440,6 +508,126 @@ export const AdminProfile = () => {
           <p className="text-[11px] text-slate-400">
             Note: "Years Experience" is automatically synchronized with your <strong className="text-white">Experience Years</strong> field above ({formData.experienceYears || '2+ years'}).
           </p>
+        </div>
+
+        {/* Interactive Tech Pillars Editor (Hero Showcase) */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 className="font-display font-bold text-base flex items-center gap-2">
+                <span className="text-aurora-cyan">⚡</span>
+                <span>Interactive Tech Pillars (Hero Showcase)</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Customize the 4 interactive categories, tags, performance badges, and tools displayed on the homepage Hero card.
+              </p>
+            </div>
+          </div>
+
+          {/* Tab selector for the 4 pillars */}
+          <div className="flex flex-wrap gap-2 p-1.5 rounded-xl bg-slate-100 dark:bg-nebula-900 border border-slate-200 dark:border-white/10">
+            {techPillars.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setActivePillarTab(p.id)}
+                className={`px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all ${
+                  activePillarTab === p.id
+                    ? 'bg-gradient-to-r from-aurora-cyan to-aurora-violet text-white shadow-sm'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {p.label || p.id}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Pillar Fields */}
+          {(() => {
+            const current = techPillars.find((p) => p.id === activePillarTab) || techPillars[0];
+            const updateCurrent = (field, val) => {
+              setTechPillars((prev) =>
+                prev.map((item) =>
+                  item.id === current.id ? { ...item, [field]: val } : item
+                )
+              );
+            };
+
+            return (
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-mono text-slate-500 mb-1">
+                      Pillar Display Name / Tab Label
+                    </label>
+                    <input
+                      type="text"
+                      value={current.label}
+                      onChange={(e) => updateCurrent('label', e.target.value)}
+                      placeholder="e.g. Frontend"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-nebula-950 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-slate-500 mb-1">
+                      Performance Metric Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={current.metric}
+                      onChange={(e) => updateCurrent('metric', e.target.value)}
+                      placeholder="e.g. 60fps Fluid UI, <40ms Latency"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-nebula-950 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-500 mb-1">
+                    Tagline / Specialty Focus Description
+                  </label>
+                  <input
+                    type="text"
+                    value={current.tagline}
+                    onChange={(e) => updateCurrent('tagline', e.target.value)}
+                    placeholder="e.g. Pixel-perfect, high-performance UI"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-nebula-950 border border-slate-200 dark:border-white/10 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono text-slate-500 mb-1">
+                    Technologies / Tools (Comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={current.tools}
+                    onChange={(e) => updateCurrent('tools', e.target.value)}
+                    placeholder="e.g. React 19, TailwindCSS, Framer Motion, Vite"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-nebula-950 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+                  />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Each tool separated by commas will appear as an individual interactive chip on the homepage.
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Telemetry Status Strip */}
+          <div className="pt-2 border-t border-slate-200 dark:border-white/10">
+            <label className="block text-xs font-mono text-slate-500 mb-1">
+              Footer Telemetry Status Strip (Bottom of card)
+            </label>
+            <input
+              type="text"
+              value={telemetryText}
+              onChange={(e) => setTelemetryText(e.target.value)}
+              placeholder="e.g. Full-Stack Ready • Diploma CSE"
+              className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+            />
+          </div>
         </div>
 
         {/* Social Media Links */}

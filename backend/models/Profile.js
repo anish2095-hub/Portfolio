@@ -74,6 +74,19 @@ const profileSchema = new mongoose.Schema(
         value: { type: String, required: true },
       },
     ],
+    techPillars: [
+      {
+        id: { type: String, required: true },
+        label: { type: String, required: true },
+        tagline: { type: String, default: '' },
+        metric: { type: String, default: '' },
+        tools: { type: [String], default: [] },
+      },
+    ],
+    telemetryText: {
+      type: String,
+      default: 'Full-Stack Ready • Diploma CSE',
+    },
     codeWindowData: {
       filename: { type: String, default: 'DeveloperProfile.ts' },
       introSnippet: {

@@ -34,7 +34,7 @@ export const HeroShowcase = ({ profile }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const stackCategories = [
+  const defaultPillars = [
     {
       id: 'frontend',
       label: 'Frontend',
@@ -76,6 +76,21 @@ export const HeroShowcase = ({ profile }) => {
       metric: '99.9% Uptime',
     },
   ];
+
+  const stackCategories = defaultPillars.map((def) => {
+    const custom = profile?.techPillars?.find((p) => p.id === def.id);
+    if (!custom) return def;
+    return {
+      ...def,
+      label: custom.label || def.label,
+      tagline: custom.tagline || def.tagline,
+      metric: custom.metric || def.metric,
+      tools:
+        Array.isArray(custom.tools) && custom.tools.length > 0
+          ? custom.tools
+          : def.tools,
+    };
+  });
 
   const currentStack = stackCategories.find((c) => c.id === activeCategory) || stackCategories[0];
   const CurrentIcon = currentStack.icon;
@@ -240,7 +255,7 @@ export const HeroShowcase = ({ profile }) => {
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2 text-slate-400 font-mono text-[11px]">
               <Activity className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Full-Stack Ready • Diploma CSE</span>
+              <span>{profile?.telemetryText || 'Full-Stack Ready • Diploma CSE'}</span>
             </div>
 
             <a

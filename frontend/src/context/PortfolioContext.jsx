@@ -37,9 +37,40 @@ export const defaultProfile = {
   },
   stats: [
     { label: 'Completed Projects', value: '35+' },
-    { label: 'Years Experience', value: '2+' },
+    { label: 'Years Experience', value: '2+ years' },
     { label: 'GitHub Repositories', value: '80+' },
     { label: 'Happy Clients', value: '20+' },
+  ],
+  telemetryText: 'Full-Stack Ready • Diploma CSE',
+  techPillars: [
+    {
+      id: 'frontend',
+      label: 'Frontend',
+      tagline: 'Pixel-perfect, high-performance UI',
+      metric: '60fps Fluid UI',
+      tools: ['React 19', 'TailwindCSS', 'Framer Motion', 'Vite', 'Responsive Design'],
+    },
+    {
+      id: 'backend',
+      label: 'Backend',
+      tagline: 'Robust & secure API architecture',
+      metric: '<40ms API Latency',
+      tools: ['Node.js', 'Express.js', 'REST APIs', 'JWT Auth', 'Middleware'],
+    },
+    {
+      id: 'database',
+      label: 'Database',
+      tagline: 'Scalable data models & indexing',
+      metric: 'Zero Data Loss',
+      tools: ['MongoDB Atlas', 'Mongoose ORM', 'Schema Design', 'Data Validation'],
+    },
+    {
+      id: 'cloud',
+      label: 'Cloud & Deploy',
+      tagline: 'Continuous delivery & reliability',
+      metric: '99.9% Uptime',
+      tools: ['Vercel', 'Render', 'Git & GitHub', 'ImgBB / Cloudinary API'],
+    },
   ],
 };
 
@@ -109,6 +140,11 @@ export const PortfolioProvider = ({ children }) => {
           resumeUrl: remoteProfile.resumeUrl || defaultProfile.resumeUrl,
           availability: remoteProfile.availability || defaultProfile.availability,
           stats: syncedStats,
+          techPillars:
+            remoteProfile.techPillars && remoteProfile.techPillars.length > 0
+              ? remoteProfile.techPillars
+              : defaultProfile.techPillars,
+          telemetryText: remoteProfile.telemetryText || defaultProfile.telemetryText,
           socialLinks: {
             ...defaultProfile.socialLinks,
             ...(remoteProfile.socialLinks || {}),
