@@ -18,9 +18,11 @@ import {
   Command,
 } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
+import { useAuth } from '../context/AuthContext';
 
-export const CommandPalette = ({ isOpen, onClose }) => {
+export const CommandPalette = ({ isOpen, onClose, onOpenAdminLogin }) => {
   const { profile } = usePortfolio();
+  const { isAuthenticated } = useAuth();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -110,8 +112,14 @@ export const CommandPalette = ({ isOpen, onClose }) => {
           subtitle: 'Manage portfolio content',
           icon: Lock,
           action: () => {
-            window.location.href = '/admin';
             onClose();
+            if (isAuthenticated) {
+              window.location.href = '/admin';
+            } else if (onOpenAdminLogin) {
+              onOpenAdminLogin();
+            } else {
+              window.location.href = '/admin/login';
+            }
           },
         },
       ],

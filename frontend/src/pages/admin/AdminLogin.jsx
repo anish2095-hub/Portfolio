@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield, Lock, Mail, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Lock, Mail, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { ThemeToggle } from '../../components/ThemeToggle';
 
 export const AdminLogin = () => {
-  const [email, setEmail] = useState('anishsingh2095@gmail.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
@@ -33,115 +32,97 @@ export const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-nebula-950 flex flex-col justify-center items-center p-4 relative overflow-hidden transition-colors">
+    <div className="min-h-screen bg-[#070e10] flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Ambient background glow */}
-      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-aurora-cyan/15 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-aurora-violet/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Top action bar */}
       <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-aurora-cyan transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-teal-400 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Portfolio</span>
         </Link>
-        <ThemeToggle />
       </div>
 
-      {/* Login Card */}
-      <div className="w-full max-w-md p-8 rounded-3xl bg-white dark:bg-nebula-900 border border-slate-200 dark:border-white/10 shadow-2xl relative z-10">
-        <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-aurora-cyan via-aurora-violet to-aurora-rose p-[1.5px] mb-4">
-            <div className="w-full h-full rounded-[14px] bg-slate-900 flex items-center justify-center text-aurora-cyan">
-              <Shield className="w-7 h-7" />
-            </div>
+      {/* Login Card matching user reference */}
+      <div className="w-full max-w-[360px] sm:max-w-[380px] p-7 rounded-[22px] bg-[#0c1619] border border-[#1b2a30] shadow-2xl relative z-10">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-amber-400 font-bold text-lg select-none">&gt;_</span>
+            <h1 className="text-xl font-bold text-white font-display tracking-tight">
+              Admin Login
+            </h1>
           </div>
-          <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
-            Admin Management Portal
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Sign in to manage projects, bio, skills, and messages
+          <p className="text-xs text-slate-400 mt-1">
+            Sign in to manage your portfolio content.
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1.5">
-              Email Address
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Mail className="w-4 h-4" />
-              </div>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@portfolio.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
-              />
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          {/* Email input */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <Mail className="w-4 h-4" />
             </div>
+            <input
+              type="email"
+              required
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#070e10] border border-[#1b2a30] text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 transition-all"
+            />
           </div>
 
-          <div>
-            <label className="block text-xs font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1.5">
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Lock className="w-4 h-4" />
-              </div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
-              />
+          {/* Password input */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <Lock className="w-4 h-4" />
             </div>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#070e10] border border-[#1b2a30] text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 transition-all"
+            />
           </div>
 
+          {/* Sign In Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose hover:opacity-95 shadow-md shadow-aurora-cyan/20 transition-all duration-300 disabled:opacity-50"
+            className="w-full mt-2 py-3 px-4 rounded-xl font-semibold text-sm text-white bg-[#00a896] hover:bg-[#009688] active:bg-[#00897b] transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Authenticating...</span>
+                <span>Signing In...</span>
               </span>
             ) : (
-              <>
-                <span>Sign In to Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
+              <span>Sign In</span>
             )}
           </button>
         </form>
 
-        {/* Default / Customizable Credentials Tip */}
-        <div className="mt-6 p-3.5 rounded-2xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/5 text-[11px] text-slate-500 dark:text-slate-400 font-mono space-y-1">
-          <div className="flex items-center justify-between font-semibold text-slate-700 dark:text-slate-300">
-            <span>🛡️ Admin Credentials:</span>
-            <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full font-sans font-medium">Customizable</span>
-          </div>
-          <p>Email: <span className="text-aurora-cyan font-medium">anishsingh2095@gmail.com</span></p>
-          <p>Password: <span className="text-aurora-cyan font-medium">admin123</span></p>
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200/60 dark:border-white/5 font-sans">
-            You can change your login email and password anytime in <strong className="text-slate-600 dark:text-slate-300">Admin Settings</strong>.
-          </p>
+        {/* Footer info */}
+        <div className="mt-5 pt-4 border-t border-[#1b2a30] text-[11px] text-slate-500 font-mono flex items-center justify-between">
+          <span>Protected Area</span>
+          <span className="text-teal-400/80">Authorized Admin Only</span>
         </div>
       </div>
     </div>

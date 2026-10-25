@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Shield, Sparkles, Terminal, Search, Command } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { CommandPalette } from './CommandPalette';
+import { AdminLoginModal } from './AdminLoginModal';
 import { usePortfolio } from '../context/PortfolioContext';
+import { useAuth } from '../context/AuthContext';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const { profile } = usePortfolio();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleAdminClick = (e) => {
+    e?.preventDefault();
+    if (isAuthenticated) {
+      navigate('/admin');
+    } else {
+      setIsAdminModalOpen(true);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -112,14 +126,15 @@ export const Navbar = () => {
             </kbd>
           </button>
 
-          <Link
-            to="/admin"
+          <button
+            onClick={handleAdminClick}
+            type="button"
             className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-full border border-white/10 text-slate-400 hover:text-aurora-cyan hover:border-aurora-cyan transition-all"
             title="Admin Management Panel"
           >
             <Shield className="w-3.5 h-3.5 text-aurora-cyan" />
             <span>Admin</span>
-          </Link>
+          </button>
 
           <a
             href="#contact"
@@ -144,6 +159,13 @@ export const Navbar = () => {
       <CommandPalette
         isOpen={isCommandOpen}
         onClose={() => setIsCommandOpen(false)}
+        onOpenAdminLogin={() => setIsAdminModalOpen(true)}
+      />
+
+      {/* Admin Quick Authorization Modal */}
+      <AdminLoginModal
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
       />
 
       {/* Mobile Drawer */}
@@ -170,14 +192,16 @@ export const Navbar = () => {
                 <Search className="w-4 h-4 text-aurora-cyan" />
                 <span>Command Spotlight (⌘K)</span>
               </button>
-              <Link
-                to="/admin"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleAdminClick(e);
+                }}
                 className="flex items-center gap-2 text-sm font-mono text-aurora-cyan"
               >
                 <Shield className="w-4 h-4" />
                 <span>Admin</span>
-              </Link>
+              </button>
             </div>
           </nav>
         </div>
