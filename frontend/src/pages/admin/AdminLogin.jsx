@@ -5,12 +5,18 @@ import { useAuth } from '../../context/AuthContext';
 import { ThemeToggle } from '../../components/ThemeToggle';
 
 export const AdminLogin = () => {
-  const [email, setEmail] = useState('admin@portfolio.com');
+  const [email, setEmail] = useState('anishsingh2095@gmail.com');
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -125,13 +131,17 @@ export const AdminLogin = () => {
           </button>
         </form>
 
-        {/* Demo Credentials Tip */}
-        <div className="mt-6 p-3 rounded-xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/5 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-          <p className="font-semibold text-slate-700 dark:text-slate-300 mb-1">
-            💡 Default Admin Credentials:
+        {/* Default / Customizable Credentials Tip */}
+        <div className="mt-6 p-3.5 rounded-2xl bg-slate-50 dark:bg-nebula-850 border border-slate-200 dark:border-white/5 text-[11px] text-slate-500 dark:text-slate-400 font-mono space-y-1">
+          <div className="flex items-center justify-between font-semibold text-slate-700 dark:text-slate-300">
+            <span>🛡️ Admin Credentials:</span>
+            <span className="text-[10px] text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full font-sans font-medium">Customizable</span>
+          </div>
+          <p>Email: <span className="text-aurora-cyan font-medium">anishsingh2095@gmail.com</span></p>
+          <p>Password: <span className="text-aurora-cyan font-medium">admin123</span></p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200/60 dark:border-white/5 font-sans">
+            You can change your login email and password anytime in <strong className="text-slate-600 dark:text-slate-300">Admin Settings</strong>.
           </p>
-          <p>Email: <span className="text-aurora-cyan">admin@portfolio.com</span></p>
-          <p>Password: <span className="text-aurora-cyan">admin123</span></p>
         </div>
       </div>
     </div>

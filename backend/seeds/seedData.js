@@ -1,6 +1,6 @@
 export const adminUser = {
-  name: 'Admin',
-  email: 'admin@portfolio.com',
+  name: 'Anish Singh',
+  email: 'anishsingh2095@gmail.com',
   password: 'admin123',
   role: 'admin',
 };

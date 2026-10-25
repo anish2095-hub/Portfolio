@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ensureAdminUser } from '../controllers/authController.js';
 
 let isConnected = false;
 
@@ -17,6 +18,7 @@ export const connectDB = async () => {
     });
     isConnected = true;
     console.log(`✅ [MongoDB Connected]: ${conn.connection.host}/${conn.connection.name}`);
+    await ensureAdminUser();
   } catch (error) {
     isConnected = false;
     console.warn(`⚠️  [MongoDB Warning]: Could not connect to MongoDB (${error.message}).`);

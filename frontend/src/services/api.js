@@ -41,6 +41,7 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   getMe: () => api.get('/auth/me'),
   changePassword: (data) => api.put('/auth/change-password', data),
+  updateCredentials: (data) => api.put('/auth/update-credentials', data),
 };
 
 // Profile endpoints

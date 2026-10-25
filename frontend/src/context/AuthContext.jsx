@@ -44,6 +44,20 @@ export const AuthProvider = ({ children }) => {
     return { success: false, message: res.data?.message || 'Login failed' };
   };
 
+  const updateSessionUser = (userData, newToken) => {
+    if (newToken) {
+      setToken(newToken);
+      localStorage.setItem('portfolio_token', newToken);
+    }
+    if (userData) {
+      setUser((prev) => {
+        const merged = { ...prev, ...userData };
+        localStorage.setItem('portfolio_user', JSON.stringify(merged));
+        return merged;
+      });
+    }
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -60,6 +74,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
+        updateSessionUser,
       }}
     >
       {children}
