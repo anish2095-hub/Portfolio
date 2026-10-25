@@ -68,7 +68,7 @@ const getSkillIcon = (iconName) => {
 };
 
 export const Skills = () => {
-  const { skills } = usePortfolio();
+  const { skills, profile } = usePortfolio();
   const [activeCategory, setActiveCategory] = useState('all');
 
   const categories = [
@@ -91,14 +91,15 @@ export const Skills = () => {
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-12">
           <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
-            // My Tech Arsenal
+            {profile?.skillsHeaderBadge || '// My Tech Arsenal'}
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Skills & Expertise
+            {profile?.skillsHeaderTitle || 'Skills & Expertise'}
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-aurora-cyan to-aurora-violet rounded-full mt-3" />
           <p className="text-slate-400 max-w-xl text-sm sm:text-base mt-4">
-            A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.
+            {profile?.skillsHeaderDescription ||
+              'A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.'}
           </p>
         </div>
 

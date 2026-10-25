@@ -72,6 +72,9 @@ export const defaultProfile = {
       tools: ['Vercel', 'Render', 'Git & GitHub', 'ImgBB / Cloudinary API'],
     },
   ],
+  skillsHeaderBadge: '// My Tech Arsenal',
+  skillsHeaderTitle: 'Skills & Expertise',
+  skillsHeaderDescription: 'A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.',
 };
 
 const PortfolioContext = createContext();
@@ -145,6 +148,9 @@ export const PortfolioProvider = ({ children }) => {
               ? remoteProfile.techPillars
               : defaultProfile.techPillars,
           telemetryText: remoteProfile.telemetryText || defaultProfile.telemetryText,
+          skillsHeaderBadge: remoteProfile.skillsHeaderBadge || defaultProfile.skillsHeaderBadge,
+          skillsHeaderTitle: remoteProfile.skillsHeaderTitle || defaultProfile.skillsHeaderTitle,
+          skillsHeaderDescription: remoteProfile.skillsHeaderDescription || defaultProfile.skillsHeaderDescription,
           socialLinks: {
             ...defaultProfile.socialLinks,
             ...(remoteProfile.socialLinks || {}),

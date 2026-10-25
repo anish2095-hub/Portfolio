@@ -69,6 +69,9 @@ export const profileData = {
       tools: ['Vercel', 'Render', 'Git & GitHub', 'ImgBB / Cloudinary API'],
     },
   ],
+  skillsHeaderBadge: '// My Tech Arsenal',
+  skillsHeaderTitle: 'Skills & Expertise',
+  skillsHeaderDescription: 'A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.',
   codeWindowData: {
     filename: 'DeveloperProfile.ts',
     introSnippet: `const developer: Engineer = {

@@ -87,6 +87,18 @@ const profileSchema = new mongoose.Schema(
       type: String,
       default: 'Full-Stack Ready • Diploma CSE',
     },
+    skillsHeaderBadge: {
+      type: String,
+      default: '// My Tech Arsenal',
+    },
+    skillsHeaderTitle: {
+      type: String,
+      default: 'Skills & Expertise',
+    },
+    skillsHeaderDescription: {
+      type: String,
+      default: 'A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.',
+    },
     codeWindowData: {
       filename: { type: String, default: 'DeveloperProfile.ts' },
       introSnippet: {
