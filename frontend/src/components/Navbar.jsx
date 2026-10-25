@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield, Sparkles, Terminal } from 'lucide-react';
+import { Menu, X, Shield, Sparkles, Terminal, Search, Command } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { CommandPalette } from './CommandPalette';
 import { usePortfolio } from '../context/PortfolioContext';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
   const { profile } = usePortfolio();
   const location = useLocation();
 
@@ -16,6 +18,18 @@ export const Navbar = () => {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Global Ctrl+K / Cmd+K keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const navLinks = [
@@ -83,8 +97,21 @@ export const Navbar = () => {
           ))}
         </nav>
 
-        {/* Actions: Admin Badge & Let's Connect */}
-        <div className="flex items-center gap-3">
+        {/* Actions: Spotlight, Admin Badge & Let's Connect */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Quick Spotlight Button */}
+          <button
+            onClick={() => setIsCommandOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nebula-900/90 hover:bg-nebula-850 border border-white/10 hover:border-aurora-cyan/40 text-slate-300 hover:text-white text-xs font-mono transition-all shadow-sm group"
+            title="Press Cmd+K or Ctrl+K to open spotlight search"
+          >
+            <Search className="w-3.5 h-3.5 text-aurora-cyan group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline">Search</span>
+            <kbd className="hidden md:inline-flex px-1.5 py-0.2 rounded bg-white/10 text-[10px] text-slate-400 group-hover:text-white">
+              ⌘K
+            </kbd>
+          </button>
+
           <Link
             to="/admin"
             className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium rounded-full border border-white/10 text-slate-400 hover:text-aurora-cyan hover:border-aurora-cyan transition-all"
@@ -113,6 +140,12 @@ export const Navbar = () => {
         </div>
       </div>
 
+      {/* Command Palette Spotlight Modal */}
+      <CommandPalette
+        isOpen={isCommandOpen}
+        onClose={() => setIsCommandOpen(false)}
+      />
+
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-x-0 top-[65px] bg-white/95 dark:bg-nebula-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 shadow-xl px-6 py-6 transition-all duration-300">
@@ -127,13 +160,23 @@ export const Navbar = () => {
               </button>
             ))}
             <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsCommandOpen(true);
+                }}
+                className="flex items-center gap-2 text-sm font-mono text-slate-300"
+              >
+                <Search className="w-4 h-4 text-aurora-cyan" />
+                <span>Command Spotlight (⌘K)</span>
+              </button>
               <Link
                 to="/admin"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2 text-sm font-mono text-aurora-cyan"
               >
                 <Shield className="w-4 h-4" />
-                <span>Open Admin Portal</span>
+                <span>Admin</span>
               </Link>
             </div>
           </nav>

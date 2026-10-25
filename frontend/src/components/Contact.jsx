@@ -27,6 +27,7 @@ export const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [activationNeeded, setActivationNeeded] = useState(false);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -66,21 +67,38 @@ export const Contact = () => {
 
       const [fsResult] = await Promise.allSettled([fsPromise, backendPromise]);
 
+      let isSuccess = false;
+      let isActivation = false;
+
       if (fsResult.status === 'fulfilled') {
         const data = await fsResult.value.json().catch(() => ({}));
         console.log('FormSubmit API response:', data);
+
+        if (data.message && data.message.toLowerCase().includes('activation')) {
+          isActivation = true;
+        } else if (data.success === 'true' || data.success === true) {
+          isSuccess = true;
+        } else {
+          isSuccess = true;
+        }
+      } else {
+        isSuccess = true;
       }
 
-      setSuccess(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      if (isActivation) {
+        setActivationNeeded(true);
+      } else {
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
 
-      // Trigger confetti celebration!
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
-      });
+        // Trigger confetti celebration!
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
+        });
+      }
     } catch (err) {
       console.error('Contact submit error:', err);
       setError('Failed to send message. Please try again or email directly.');
@@ -238,7 +256,48 @@ export const Contact = () => {
           {/* Right: Interactive Form */}
           <div className="lg:col-span-7">
             <div className="p-6 sm:p-8 rounded-3xl bg-nebula-900/95 border border-white/10 shadow-2xl">
-              {success ? (
+              {activationNeeded ? (
+                <div className="py-8 flex flex-col items-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                    <Mail className="w-8 h-8" />
+                  </div>
+                  <h4 className="font-display text-2xl font-bold text-white">
+                    One-Time Activation Required
+                  </h4>
+                  <p className="text-slate-300 max-w-md text-sm">
+                    FormSubmit has sent an activation confirmation email to{' '}
+                    <strong className="text-aurora-cyan font-semibold">anishsingh2095@gmail.com</strong>.
+                  </p>
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-left text-xs text-amber-200/90 space-y-2 max-w-md w-full">
+                    <p className="font-semibold text-amber-400">To start receiving emails directly:</p>
+                    <ol className="list-decimal list-inside space-y-1.5 text-slate-300">
+                      <li>Open your Gmail (<a href="https://mail.google.com" target="_blank" rel="noreferrer" className="underline text-aurora-cyan font-semibold">mail.google.com</a>).</li>
+                      <li>Check your <strong>Inbox</strong> or <strong>Spam / Junk</strong> folder for an email from <strong>FormSubmit</strong>.</li>
+                      <li>Click the <strong className="text-white">"Activate Form"</strong> button.</li>
+                    </ol>
+                    <p className="text-[11px] text-slate-400 pt-1">
+                      Once activated, all future messages will instantly be delivered directly to your inbox.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-3 justify-center pt-2">
+                    <a
+                      href="https://mail.google.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-white bg-gradient-to-r from-aurora-cyan to-aurora-violet hover:opacity-95 transition-all shadow-md"
+                    >
+                      Open Gmail Now &rarr;
+                    </a>
+                    <button
+                      onClick={() => setActivationNeeded(false)}
+                      type="button"
+                      className="px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-slate-400 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+                    >
+                      Back to Form
+                    </button>
+                  </div>
+                </div>
+              ) : success ? (
                 <div className="py-12 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                     <CheckCircle2 className="w-10 h-10" />

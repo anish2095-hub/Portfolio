@@ -414,7 +414,23 @@ export const AdminProfile = () => {
                 name="youtube"
                 value={formData.youtube}
                 onChange={handleChange}
+                placeholder="https://youtube.com/@yourchannel"
                 className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono text-slate-500 mb-1 flex items-center justify-between">
+                <span>Instagram Profile URL</span>
+                <span className="text-[10px] text-aurora-rose">Active on public site</span>
+              </label>
+              <input
+                type="text"
+                name="instagram"
+                value={formData.instagram}
+                onChange={handleChange}
+                placeholder="https://instagram.com/yourhandle"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs focus:ring-2 focus:ring-aurora-rose/40"
               />
             </div>
           </div>

@@ -89,14 +89,14 @@ export const About = () => {
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-nebula-900 border border-white/15 shadow-2xl z-10">
                 <img
                   src={
-                    profile?.avatar ||
-                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80'
+                    profile?.avatar && !profile.avatar.includes('photo-1534528741775-53994a69daeb')
+                      ? profile.avatar
+                      : '/pfp.jpeg'
                   }
                   alt={profile?.name || 'Anish Singh'}
                   className="w-full h-full object-cover object-center transition-all duration-500 transform group-hover:scale-105"
                   onError={(e) => {
-                    e.currentTarget.src =
-                      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=80';
+                    e.currentTarget.src = '/pfp.jpeg';
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-nebula-950 via-nebula-950/25 to-transparent opacity-85" />

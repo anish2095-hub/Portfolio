@@ -14,6 +14,30 @@ export const getProfile = async (req, res) => {
       let profile = await Profile.findOne();
       if (!profile) {
         profile = await Profile.create(profileData);
+      } else if (
+        profile.name === 'Alex Rivera' ||
+        profile.avatar?.includes('photo-1534528741775-53994a69daeb') ||
+        !profile.avatar
+      ) {
+        // Auto-heal old placeholder record in MongoDB with Anish Singh details
+        profile.name = 'Anish Singh';
+        profile.title = 'Full Stack MERN Developer & Aspiring Software Engineer';
+        profile.avatar = '/pfp.jpeg';
+        profile.location = 'Gaya ji, Bihar';
+        profile.degree = 'Diploma in Computer Science';
+        profile.email = 'anishsingh2095@gmail.com';
+        profile.phone = '+91 9334398322';
+        profile.experienceYears = '2+ years';
+        profile.availability = 'Available for Full-time Roles & High-Impact Contracts';
+        profile.bio = "Hi, I'm Anish—an aspiring software developer and a CSE student who is passionate about technology, programming, and building meaningful digital experiences.";
+        profile.socialLinks = {
+          github: profile.socialLinks?.github || 'https://github.com/anish2095-hub',
+          linkedin: profile.socialLinks?.linkedin || 'https://www.linkedin.com/in/anish-kumar-03b105333/',
+          twitter: profile.socialLinks?.twitter || 'https://x.com',
+          youtube: profile.socialLinks?.youtube || 'https://youtube.com',
+          instagram: profile.socialLinks?.instagram || 'https://instagram.com',
+        };
+        await profile.save();
       }
       return res.json({ success: true, data: profile });
     }

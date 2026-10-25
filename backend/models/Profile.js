@@ -5,64 +5,65 @@ const profileSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      default: 'Alex Rivera',
+      default: 'Anish Singh',
     },
     title: {
       type: String,
-      default: 'Full Stack MERN Developer & Creative Technologist',
+      default: 'Full Stack MERN Developer & Aspiring Software Engineer',
     },
     typingRoles: {
       type: [String],
       default: [
-        'Full Stack Developer',
-        'MERN Specialist',
-        'UI/UX Enthusiast',
-        'Open Source Creator',
+        'Full Stack MERN Developer',
+        'React & Node.js Specialist',
+        'CSE Diploma Student',
+        'UI/UX & Creative Technologist',
+        'Open Source Builder',
       ],
     },
     tagline: {
       type: String,
-      default: 'Crafting performant web experiences, scalable microservices, and elegant interfaces with modern technologies.',
+      default: 'Designing and engineering high-impact digital products, scalable web architectures, and fluid interactive experiences.',
     },
     avatar: {
       type: String,
-      default: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
+      default: '/pfp.jpeg',
     },
     bio: {
       type: String,
-      default: 'I am a passionate software engineer with extensive experience developing full-stack web applications. I focus on clean architectures, high performance, and thoughtful user experience.',
+      default: "Hi, I'm Anish—an aspiring software developer and a CSE student who is passionate about technology, programming, and building meaningful digital experiences.",
     },
     location: {
       type: String,
-      default: 'San Francisco, CA (Open to Remote)',
+      default: 'Gaya ji, Bihar',
     },
     email: {
       type: String,
-      default: 'alex.rivera@example.com',
+      default: 'anishsingh2095@gmail.com',
     },
     phone: {
       type: String,
-      default: '+1 (555) 234-5678',
+      default: '+91 9334398322',
     },
     degree: {
       type: String,
-      default: 'B.S. in Computer Science',
+      default: 'Diploma in Computer Science',
     },
     experienceYears: {
       type: String,
-      default: '4+ Years',
+      default: '2+ years',
     },
     availability: {
       type: String,
-      default: 'Available for Full-time & High-impact Contracts',
+      default: 'Available for Full-time Roles & High-Impact Contracts',
     },
     resumeUrl: {
       type: String,
-      default: '#',
+      default: '#contact',
     },
     socialLinks: {
-      github: { type: String, default: 'https://github.com' },
-      linkedin: { type: String, default: 'https://linkedin.com' },
+      github: { type: String, default: 'https://github.com/anish2095-hub' },
+      linkedin: { type: String, default: 'https://www.linkedin.com/in/anish-kumar-03b105333/' },
       twitter: { type: String, default: 'https://x.com' },
       youtube: { type: String, default: 'https://youtube.com' },
       instagram: { type: String, default: 'https://instagram.com' },
@@ -78,11 +79,11 @@ const profileSchema = new mongoose.Schema(
       introSnippet: {
         type: String,
         default: `const developer = {
-  name: "Alex Rivera",
-  focus: ["MERN Stack", "Cloud Systems", "Interactive UI"],
+  name: "Anish Singh",
+  focus: ["MERN Stack", "Modern Frontend", "Cloud Deployments"],
   currentStatus: "Open for Opportunities",
-  traits: ["Pixel Perfectionist", "Clean Code Advocate"],
-  isCoffeePowered: true
+  traits: ["Clean Architecture", "Continuous Learner"],
+  location: "Gaya ji, Bihar"
 };`,
       },
     },

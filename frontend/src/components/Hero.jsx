@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Download, Send, Sparkles, ChevronDown } from 'lucide-react';
-import { CodeWindow } from './CodeWindow';
+import { HeroShowcase } from './HeroShowcase';
 import { usePortfolio } from '../context/PortfolioContext';
 
 export const Hero = () => {
@@ -129,9 +129,9 @@ export const Hero = () => {
             )}
           </div>
 
-          {/* Right Column: Interactive Code Window */}
+          {/* Right Column: Interactive Developer Bento Showcase */}
           <div className="lg:col-span-5 flex justify-center">
-            <CodeWindow profile={profile} />
+            <HeroShowcase profile={profile} />
           </div>
         </div>
       </div>

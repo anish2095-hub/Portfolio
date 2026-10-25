@@ -165,12 +165,12 @@ export const Projects = () => {
 
       {/* Case Study Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-nebula-900 border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-nebula-900 border border-white/15 shadow-2xl p-6 sm:p-8">
             <button
               onClick={() => setSelectedProject(null)}
               type="button"
-              className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-nebula-800 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -178,37 +178,37 @@ export const Projects = () => {
             <img
               src={selectedProject.coverImage}
               alt={selectedProject.title}
-              className="w-full h-56 object-cover rounded-xl mb-6"
+              className="w-full h-64 object-cover rounded-2xl mb-6 border border-white/10"
             />
 
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-aurora-cyan/10 text-aurora-cyan border border-aurora-cyan/20">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="font-mono text-xs px-3 py-1 rounded-full bg-aurora-cyan/15 text-aurora-cyan border border-aurora-cyan/30">
                 {selectedProject.category}
               </span>
               {selectedProject.featured && (
-                <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-500 font-semibold">
-                  Featured
+                <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-semibold border border-amber-400/30">
+                  Featured Case Study
                 </span>
               )}
             </div>
 
-            <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white mb-3">
+            <h3 className="font-display text-2xl font-bold text-white mb-3">
               {selectedProject.title}
             </h3>
 
-            <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-6">
+            <p className="text-slate-300 text-sm leading-relaxed mb-6">
               {selectedProject.description || selectedProject.summary}
             </p>
 
             <div className="mb-6">
               <h4 className="font-mono text-xs uppercase text-slate-400 mb-2 font-semibold">
-                Tech Stack
+                Tech Stack Architecture
               </h4>
               <div className="flex flex-wrap gap-2">
                 {selectedProject.technologies?.map((tech, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-nebula-850 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-white/10"
+                    className="px-3 py-1 rounded-lg text-xs font-mono bg-nebula-950 text-slate-200 border border-white/10"
                   >
                     {tech}
                   </span>
@@ -216,13 +216,13 @@ export const Projects = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
+            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
               {selectedProject.liveUrl && (
                 <a
                   href={selectedProject.liveUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-aurora-cyan hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-aurora-cyan to-aurora-violet hover:opacity-95 shadow-md shadow-aurora-cyan/20 transition-all"
                 >
                   <ExternalLink className="w-4 h-4" />
                   <span>Launch Live App</span>
@@ -233,7 +233,7 @@ export const Projects = () => {
                   href={selectedProject.githubUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-nebula-850 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
                 >
                   <Github className="w-4 h-4" />
                   <span>View Repository</span>
