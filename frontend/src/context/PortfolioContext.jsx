@@ -27,7 +27,7 @@ export const defaultProfile = {
   degree: 'Diploma in Computer Science',
   experienceYears: '2+ years',
   availability: 'Available for Full-time Roles & High-Impact Contracts',
-  resumeUrl: '#contact',
+  resumeUrl: 'https://anish2095-hub.github.io/MyResumeDemo/',
   socialLinks: {
     github: 'https://github.com/anish2095-hub',
     linkedin: 'https://www.linkedin.com/in/anish-kumar-03b105333/',
@@ -83,6 +83,19 @@ export const PortfolioProvider = ({ children }) => {
           remoteProfile.avatar.includes('photo-1534528741775-53994a69daeb') ||
           remoteProfile.avatar.includes('unsplash.com');
 
+        const finalExp = remoteProfile.experienceYears || defaultProfile.experienceYears;
+        const rawStats =
+          remoteProfile.stats && remoteProfile.stats.length > 0
+            ? remoteProfile.stats
+            : defaultProfile.stats;
+
+        const syncedStats = rawStats.map((st) => {
+          if (st.label && st.label.toLowerCase().includes('experience')) {
+            return { ...st, value: finalExp };
+          }
+          return st;
+        });
+
         setProfile({
           ...defaultProfile,
           ...remoteProfile,
@@ -92,8 +105,10 @@ export const PortfolioProvider = ({ children }) => {
           email: remoteProfile.email || defaultProfile.email,
           phone: remoteProfile.phone || defaultProfile.phone,
           degree: remoteProfile.degree || defaultProfile.degree,
-          experienceYears: remoteProfile.experienceYears || defaultProfile.experienceYears,
+          experienceYears: finalExp,
+          resumeUrl: remoteProfile.resumeUrl || defaultProfile.resumeUrl,
           availability: remoteProfile.availability || defaultProfile.availability,
+          stats: syncedStats,
           socialLinks: {
             ...defaultProfile.socialLinks,
             ...(remoteProfile.socialLinks || {}),

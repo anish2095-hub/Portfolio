@@ -19,6 +19,9 @@ export const AdminProfile = () => {
     experienceYears: '',
     availability: '',
     resumeUrl: '',
+    statProjects: '35+',
+    statGithub: '80+',
+    statClients: '20+',
     github: '',
     linkedin: '',
     twitter: '',
@@ -53,6 +56,9 @@ export const AdminProfile = () => {
         experienceYears: profile.experienceYears || '2+ years',
         availability: profile.availability || 'Available for Full-time Roles & High-Impact Contracts',
         resumeUrl: profile.resumeUrl || '',
+        statProjects: profile.stats?.find((s) => s.label.toLowerCase().includes('project'))?.value || '35+',
+        statGithub: profile.stats?.find((s) => s.label.toLowerCase().includes('github') || s.label.toLowerCase().includes('repo'))?.value || '80+',
+        statClients: profile.stats?.find((s) => s.label.toLowerCase().includes('client'))?.value || '20+',
         github: profile.socialLinks?.github || '',
         linkedin: profile.socialLinks?.linkedin || '',
         twitter: profile.socialLinks?.twitter || '',
@@ -115,6 +121,12 @@ export const AdminProfile = () => {
         experienceYears: formData.experienceYears,
         availability: formData.availability,
         resumeUrl: formData.resumeUrl,
+        stats: [
+          { label: 'Completed Projects', value: formData.statProjects || '35+' },
+          { label: 'Years Experience', value: formData.experienceYears || '2+ years' },
+          { label: 'GitHub Repositories', value: formData.statGithub || '80+' },
+          { label: 'Happy Clients', value: formData.statClients || '20+' },
+        ],
         socialLinks: {
           github: formData.github,
           linkedin: formData.linkedin,
@@ -379,6 +391,55 @@ export const AdminProfile = () => {
               className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
             />
           </div>
+        </div>
+
+        {/* Hero Quick Statistics */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-nebula-850 border border-slate-200 dark:border-white/5 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-display font-bold text-base">Hero Showcase Metrics / Statistics</h3>
+            <span className="text-[11px] font-mono text-aurora-cyan">Live on homepage</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-mono text-slate-500 mb-1">Completed Projects</label>
+              <input
+                type="text"
+                name="statProjects"
+                value={formData.statProjects}
+                onChange={handleChange}
+                placeholder="35+"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono text-slate-500 mb-1">GitHub Repositories</label>
+              <input
+                type="text"
+                name="statGithub"
+                value={formData.statGithub}
+                onChange={handleChange}
+                placeholder="80+"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono text-slate-500 mb-1">Happy Clients / Teams</label>
+              <input
+                type="text"
+                name="statClients"
+                value={formData.statClients}
+                onChange={handleChange}
+                placeholder="20+"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-nebula-900 border border-slate-200 dark:border-white/10 text-sm font-mono text-xs"
+              />
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-400">
+            Note: "Years Experience" is automatically synchronized with your <strong className="text-white">Experience Years</strong> field above ({formData.experienceYears || '2+ years'}).
+          </p>
         </div>
 
         {/* Social Media Links */}

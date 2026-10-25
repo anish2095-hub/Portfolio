@@ -24,7 +24,7 @@ export const profileData = {
   degree: 'Diploma in Computer Science',
   experienceYears: '2+ years',
   availability: 'Available for Full-time Roles & High-Impact Contracts',
-  resumeUrl: '#contact',
+  resumeUrl: 'https://anish2095-hub.github.io/MyResumeDemo/',
   socialLinks: {
     github: 'https://github.com/anish2095-hub',
     linkedin: 'https://www.linkedin.com/in/anish-kumar-03b105333/',

@@ -59,7 +59,7 @@ const profileSchema = new mongoose.Schema(
     },
     resumeUrl: {
       type: String,
-      default: '#contact',
+      default: 'https://anish2095-hub.github.io/MyResumeDemo/',
     },
     socialLinks: {
       github: { type: String, default: 'https://github.com/anish2095-hub' },

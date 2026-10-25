@@ -114,17 +114,24 @@ export const Hero = () => {
 
             {/* Quick Metrics */}
             {profile?.stats?.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-slate-200 dark:border-white/10 w-full">
-                {profile.stats.map((stat, idx) => (
-                  <div key={idx} className="flex flex-col">
-                    <span className="font-display text-2xl font-bold text-slate-900 dark:text-white">
-                      {stat.value}
-                    </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-                      {stat.label}
-                    </span>
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-white/10 w-full">
+                {profile.stats.map((stat, idx) => {
+                  const displayValue =
+                    stat.label.toLowerCase().includes('experience') && profile?.experienceYears
+                      ? profile.experienceYears
+                      : stat.value;
+
+                  return (
+                    <div key={idx} className="flex flex-col">
+                      <span className="font-display text-2xl font-bold text-white">
+                        {displayValue}
+                      </span>
+                      <span className="text-xs text-slate-400 font-medium mt-0.5">
+                        {stat.label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

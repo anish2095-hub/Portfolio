@@ -56,6 +56,19 @@ export const updateProfile = async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
       let profile = await Profile.findOne();
+
+      // Ensure stats has matching experienceYears
+      if (req.body.experienceYears) {
+        if (!req.body.stats && profile?.stats) {
+          req.body.stats = profile.stats.map((s) => {
+            if (s.label && s.label.toLowerCase().includes('experience')) {
+              return { ...s, value: req.body.experienceYears };
+            }
+            return s;
+          });
+        }
+      }
+
       if (!profile) {
         profile = await Profile.create(req.body);
       } else {
@@ -68,6 +81,14 @@ export const updateProfile = async (req, res) => {
     }
 
     // In-memory fallback
+    if (req.body.experienceYears && memoryProfile.stats) {
+      memoryProfile.stats = memoryProfile.stats.map((s) => {
+        if (s.label && s.label.toLowerCase().includes('experience')) {
+          return { ...s, value: req.body.experienceYears };
+        }
+        return s;
+      });
+    }
     memoryProfile = { ...memoryProfile, ...req.body };
     res.json({
       success: true,
