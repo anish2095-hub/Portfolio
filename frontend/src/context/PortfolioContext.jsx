@@ -7,6 +7,7 @@ import {
   certificateAPI,
   mediaAPI,
 } from '../services/api';
+import { sortCertificatesNewestFirst } from '../utils/certificateDateDetector';
 
 export const defaultProfile = {
   name: 'Anish Singh',
@@ -167,7 +168,7 @@ export const PortfolioProvider = ({ children }) => {
         setExperiences(experienceRes.value.data.data);
       }
       if (certRes.status === 'fulfilled' && certRes.value.data?.data) {
-        setCertificates(certRes.value.data.data);
+        setCertificates(sortCertificatesNewestFirst(certRes.value.data.data));
       }
       if (mediaRes.status === 'fulfilled' && mediaRes.value.data?.data) {
         setMedia(mediaRes.value.data.data);

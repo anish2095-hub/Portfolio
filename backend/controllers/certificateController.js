@@ -4,19 +4,65 @@ import { certificatesData } from '../seeds/seedData.js';
 
 let memoryCertificates = certificatesData.map((c, idx) => ({ ...c, _id: `mem_cert_${idx + 1}` }));
 
-// @desc    Get all certificates
+// Helper: Parse certificate date/year into numeric timestamp for sorting (Newest first)
+const parseCertificateDateToTimestamp = (dateStr) => {
+  if (!dateStr) return 0;
+  const str = String(dateStr).trim();
+
+  const direct = new Date(str);
+  if (!isNaN(direct.getTime()) && direct.getFullYear() >= 1990 && direct.getFullYear() <= 2100) {
+    return direct.getTime();
+  }
+
+  const yearMatches = str.match(/\b(19\d\d|20\d\d)\b/g);
+  if (yearMatches && yearMatches.length > 0) {
+    const validYears = yearMatches.map((y) => parseInt(y, 10));
+    const year = Math.max(...validYears);
+
+    const monthAbbr = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const lower = str.toLowerCase();
+    let monthIdx = 0;
+    for (let i = 0; i < monthAbbr.length; i++) {
+      if (lower.includes(monthAbbr[i])) {
+        monthIdx = i;
+        break;
+      }
+    }
+    return new Date(year, monthIdx, 1).getTime();
+  }
+  return 0;
+};
+
+// Sort certificates: Newest first -> Oldest in the last
+const sortCertificates = (list) => {
+  return [...list].sort((a, b) => {
+    const timeA = parseCertificateDateToTimestamp(a?.issueDate);
+    const timeB = parseCertificateDateToTimestamp(b?.issueDate);
+    if (timeA !== timeB) {
+      return timeB - timeA;
+    }
+    const createdA = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const createdB = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return createdB - createdA;
+  });
+};
+
+// @desc    Get all certificates (Sorted newest first)
 // @route   GET /api/certificates
 // @access  Public
 export const getCertificates = async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
-      const certificates = await Certificate.find().sort({ order: 1, createdAt: -1 });
-      return res.json({ success: true, count: certificates.length, data: certificates });
+      const certificates = await Certificate.find();
+      const sorted = sortCertificates(certificates);
+      return res.json({ success: true, count: sorted.length, data: sorted });
     }
 
-    res.json({ success: true, count: memoryCertificates.length, data: memoryCertificates, isFallback: true });
+    const sortedMemory = sortCertificates(memoryCertificates);
+    res.json({ success: true, count: sortedMemory.length, data: sortedMemory, isFallback: true });
   } catch (error) {
-    res.json({ success: true, count: memoryCertificates.length, data: memoryCertificates });
+    const sortedFallback = sortCertificates(memoryCertificates);
+    res.json({ success: true, count: sortedFallback.length, data: sortedFallback });
   }
 };
 
