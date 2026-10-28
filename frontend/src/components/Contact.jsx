@@ -255,7 +255,7 @@ export const Contact = () => {
 
           {/* Right: Interactive Form */}
           <div className="lg:col-span-7">
-            <div className="p-6 sm:p-8 rounded-3xl bg-nebula-900/95 border border-white/10 shadow-2xl">
+            <div className="p-5 sm:p-8 rounded-3xl bg-nebula-900/95 border border-white/10 shadow-2xl">
               {activationNeeded ? (
                 <div className="py-8 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center">
@@ -343,7 +343,7 @@ export const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="John Doe"
-                        className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                       />
                     </div>
 
@@ -358,7 +358,7 @@ export const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="john@example.com"
-                        className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                       />
                     </div>
                   </div>
@@ -373,7 +373,7 @@ export const Contact = () => {
                       value={formData.subject}
                       onChange={handleChange}
                       placeholder="Project Inquiry / Job Opportunity"
-                      className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all"
                     />
                   </div>
 
@@ -388,14 +388,14 @@ export const Contact = () => {
                       value={formData.message}
                       onChange={handleChange}
                       placeholder="Tell me about your idea, timeline, or requirements..."
-                      className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all resize-y"
+                      className="w-full px-4 py-3 rounded-xl bg-nebula-950 border border-white/10 text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-aurora-cyan/50 focus:border-aurora-cyan transition-all resize-y"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose hover:opacity-95 shadow-lg shadow-aurora-cyan/20 transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-rose hover:opacity-95 shadow-lg shadow-aurora-cyan/20 transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">

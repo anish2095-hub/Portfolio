@@ -8,87 +8,78 @@ import {
   mediaAPI,
 } from '../services/api';
 import { sortCertificatesNewestFirst } from '../utils/certificateDateDetector';
+import {
+  initialProfile,
+  initialProjects,
+  initialSkills,
+  initialExperiences,
+  initialCertificates,
+  initialMedia,
+} from '../data/initialPortfolioData';
 
-export const defaultProfile = {
-  name: 'Anish Singh',
-  title: 'Full Stack MERN Developer & Aspiring Software Engineer',
-  typingRoles: [
-    'Full Stack MERN Developer',
-    'React & Node.js Specialist',
-    'CSE Diploma Student',
-    'UI/UX & Creative Technologist',
-    'Open Source Builder',
-  ],
-  tagline: 'Designing and engineering high-impact digital products, scalable web architectures, and fluid interactive experiences.',
-  avatar: '/pfp.jpeg',
-  bio: "Hi, I'm Anish—an aspiring software developer and a CSE student who is passionate about technology, programming, and building meaningful digital experiences.",
-  location: 'Gaya ji, Bihar',
-  email: 'anishsingh2095@gmail.com',
-  phone: '+91 9334398322',
-  degree: 'Diploma in Computer Science',
-  experienceYears: '2+ years',
-  availability: 'Available for Full-time Roles & High-Impact Contracts',
-  resumeUrl: 'https://anish2095-hub.github.io/MyResumeDemo/',
-  socialLinks: {
-    github: 'https://github.com/anish2095-hub',
-    linkedin: 'https://www.linkedin.com/in/anish-kumar-03b105333/',
-    twitter: 'https://x.com',
-    youtube: 'https://youtube.com',
-    instagram: 'https://instagram.com',
-  },
-  stats: [
-    { label: 'Completed Projects', value: '35+' },
-    { label: 'Years Experience', value: '2+ years' },
-    { label: 'GitHub Repositories', value: '80+' },
-    { label: 'Happy Clients', value: '20+' },
-  ],
-  telemetryText: 'Full-Stack Ready • Diploma CSE',
-  techPillars: [
-    {
-      id: 'frontend',
-      label: 'Frontend',
-      tagline: 'Pixel-perfect, high-performance UI',
-      metric: '60fps Fluid UI',
-      tools: ['React 19', 'TailwindCSS', 'Framer Motion', 'Vite', 'Responsive Design'],
-    },
-    {
-      id: 'backend',
-      label: 'Backend',
-      tagline: 'Robust & secure API architecture',
-      metric: '<40ms API Latency',
-      tools: ['Node.js', 'Express.js', 'REST APIs', 'JWT Auth', 'Middleware'],
-    },
-    {
-      id: 'database',
-      label: 'Database',
-      tagline: 'Scalable data models & indexing',
-      metric: 'Zero Data Loss',
-      tools: ['MongoDB Atlas', 'Mongoose ORM', 'Schema Design', 'Data Validation'],
-    },
-    {
-      id: 'cloud',
-      label: 'Cloud & Deploy',
-      tagline: 'Continuous delivery & reliability',
-      metric: '99.9% Uptime',
-      tools: ['Vercel', 'Render', 'Git & GitHub', 'ImgBB / Cloudinary API'],
-    },
-  ],
-  skillsHeaderBadge: '// My Tech Arsenal',
-  skillsHeaderTitle: 'Skills & Expertise',
-  skillsHeaderDescription: 'A comprehensive overview of technologies, frameworks, and modern tools I leverage to build resilient applications.',
-};
+export const defaultProfile = initialProfile;
 
 const PortfolioContext = createContext();
 
+const CACHE_KEY = 'portfolio_data_cache_v2';
+
+// Safe localStorage loader
+const getCachedData = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed;
+  } catch (e) {
+    return null;
+  }
+};
+
 export const PortfolioProvider = ({ children }) => {
-  const [profile, setProfile] = useState(defaultProfile);
-  const [projects, setProjects] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [experiences, setExperiences] = useState([]);
-  const [certificates, setCertificates] = useState([]);
-  const [media, setMedia] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cached = getCachedData();
+
+  const [profile, setProfile] = useState(cached?.profile || initialProfile);
+  const [projects, setProjects] = useState(
+    Array.isArray(cached?.projects) && cached.projects.length > 0
+      ? cached.projects
+      : initialProjects
+  );
+  const [skills, setSkills] = useState(
+    Array.isArray(cached?.skills) && cached.skills.length > 0
+      ? cached.skills
+      : initialSkills
+  );
+  const [experiences, setExperiences] = useState(
+    Array.isArray(cached?.experiences) && cached.experiences.length > 0
+      ? cached.experiences
+      : initialExperiences
+  );
+  const [certificates, setCertificates] = useState(
+    Array.isArray(cached?.certificates) && cached.certificates.length > 0
+      ? sortCertificatesNewestFirst(cached.certificates)
+      : sortCertificatesNewestFirst(initialCertificates)
+  );
+  const [media, setMedia] = useState(
+    Array.isArray(cached?.media) && cached.media.length > 0
+      ? cached.media
+      : initialMedia
+  );
+  const [loading, setLoading] = useState(false);
+  const [isLiveConnected, setIsLiveConnected] = useState(false);
   const [error, setError] = useState(null);
+
+  // Helper to verify that response is valid JSON data and not an HTML SPA fallback
+  const isValidJsonResponse = (res) => {
+    if (!res || !res.data) return false;
+    // If it's a string containing HTML, it's a SPA fallback rewrite (e.g. index.html)
+    if (typeof res.data === 'string') {
+      const trimmed = res.data.trim().toLowerCase();
+      if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<html')) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -109,20 +100,33 @@ export const PortfolioProvider = ({ children }) => {
         mediaAPI.getAll(),
       ]);
 
-      if (profileRes.status === 'fulfilled' && profileRes.value.data?.data) {
+      let hasLiveSuccess = false;
+      let newProfile = profile;
+      let newProjects = projects;
+      let newSkills = skills;
+      let newExperiences = experiences;
+      let newCertificates = certificates;
+      let newMedia = media;
+
+      // Profile
+      if (
+        profileRes.status === 'fulfilled' &&
+        isValidJsonResponse(profileRes.value) &&
+        profileRes.value.data?.data
+      ) {
+        hasLiveSuccess = true;
         const remoteProfile = profileRes.value.data.data;
-        // Sanitize: ensure Alex Rivera or placeholder image doesn't overwrite Anish
         const isPlaceholderName = !remoteProfile.name || remoteProfile.name === 'Alex Rivera';
         const isPlaceholderAvatar =
           !remoteProfile.avatar ||
           remoteProfile.avatar.includes('photo-1534528741775-53994a69daeb') ||
           remoteProfile.avatar.includes('unsplash.com');
 
-        const finalExp = remoteProfile.experienceYears || defaultProfile.experienceYears;
+        const finalExp = remoteProfile.experienceYears || initialProfile.experienceYears;
         const rawStats =
           remoteProfile.stats && remoteProfile.stats.length > 0
             ? remoteProfile.stats
-            : defaultProfile.stats;
+            : initialProfile.stats;
 
         const syncedStats = rawStats.map((st) => {
           if (st.label && st.label.toLowerCase().includes('experience')) {
@@ -131,52 +135,118 @@ export const PortfolioProvider = ({ children }) => {
           return st;
         });
 
-        setProfile({
-          ...defaultProfile,
+        newProfile = {
+          ...initialProfile,
           ...remoteProfile,
-          name: isPlaceholderName ? defaultProfile.name : (remoteProfile.name || defaultProfile.name),
-          avatar: isPlaceholderAvatar ? defaultProfile.avatar : (remoteProfile.avatar || defaultProfile.avatar),
-          location: remoteProfile.location || defaultProfile.location,
-          email: remoteProfile.email || defaultProfile.email,
-          phone: remoteProfile.phone || defaultProfile.phone,
-          degree: remoteProfile.degree || defaultProfile.degree,
+          name: isPlaceholderName ? initialProfile.name : (remoteProfile.name || initialProfile.name),
+          avatar: isPlaceholderAvatar ? initialProfile.avatar : (remoteProfile.avatar || initialProfile.avatar),
+          location: remoteProfile.location || initialProfile.location,
+          email: remoteProfile.email || initialProfile.email,
+          phone: remoteProfile.phone || initialProfile.phone,
+          degree: remoteProfile.degree || initialProfile.degree,
           experienceYears: finalExp,
-          resumeUrl: remoteProfile.resumeUrl || defaultProfile.resumeUrl,
-          availability: remoteProfile.availability || defaultProfile.availability,
+          resumeUrl: remoteProfile.resumeUrl || initialProfile.resumeUrl,
+          availability: remoteProfile.availability || initialProfile.availability,
           stats: syncedStats,
           techPillars:
             remoteProfile.techPillars && remoteProfile.techPillars.length > 0
               ? remoteProfile.techPillars
-              : defaultProfile.techPillars,
-          telemetryText: remoteProfile.telemetryText || defaultProfile.telemetryText,
-          skillsHeaderBadge: remoteProfile.skillsHeaderBadge || defaultProfile.skillsHeaderBadge,
-          skillsHeaderTitle: remoteProfile.skillsHeaderTitle || defaultProfile.skillsHeaderTitle,
-          skillsHeaderDescription: remoteProfile.skillsHeaderDescription || defaultProfile.skillsHeaderDescription,
+              : initialProfile.techPillars,
+          telemetryText: remoteProfile.telemetryText || initialProfile.telemetryText,
+          skillsHeaderBadge: remoteProfile.skillsHeaderBadge || initialProfile.skillsHeaderBadge,
+          skillsHeaderTitle: remoteProfile.skillsHeaderTitle || initialProfile.skillsHeaderTitle,
+          skillsHeaderDescription: remoteProfile.skillsHeaderDescription || initialProfile.skillsHeaderDescription,
           socialLinks: {
-            ...defaultProfile.socialLinks,
+            ...initialProfile.socialLinks,
             ...(remoteProfile.socialLinks || {}),
           },
-        });
+        };
+        setProfile(newProfile);
       }
-      if (projectsRes.status === 'fulfilled' && projectsRes.value.data?.data) {
-        setProjects(projectsRes.value.data.data);
+
+      // Projects
+      if (
+        projectsRes.status === 'fulfilled' &&
+        isValidJsonResponse(projectsRes.value) &&
+        Array.isArray(projectsRes.value.data?.data) &&
+        projectsRes.value.data.data.length > 0
+      ) {
+        hasLiveSuccess = true;
+        newProjects = projectsRes.value.data.data;
+        setProjects(newProjects);
       }
-      if (skillsRes.status === 'fulfilled' && skillsRes.value.data?.data) {
-        setSkills(skillsRes.value.data.data);
+
+      // Skills
+      if (
+        skillsRes.status === 'fulfilled' &&
+        isValidJsonResponse(skillsRes.value) &&
+        Array.isArray(skillsRes.value.data?.data) &&
+        skillsRes.value.data.data.length > 0
+      ) {
+        hasLiveSuccess = true;
+        newSkills = skillsRes.value.data.data;
+        setSkills(newSkills);
       }
-      if (experienceRes.status === 'fulfilled' && experienceRes.value.data?.data) {
-        setExperiences(experienceRes.value.data.data);
+
+      // Experiences
+      if (
+        experienceRes.status === 'fulfilled' &&
+        isValidJsonResponse(experienceRes.value) &&
+        Array.isArray(experienceRes.value.data?.data) &&
+        experienceRes.value.data.data.length > 0
+      ) {
+        hasLiveSuccess = true;
+        newExperiences = experienceRes.value.data.data;
+        setExperiences(newExperiences);
       }
-      if (certRes.status === 'fulfilled' && certRes.value.data?.data) {
-        setCertificates(sortCertificatesNewestFirst(certRes.value.data.data));
+
+      // Certificates
+      if (
+        certRes.status === 'fulfilled' &&
+        isValidJsonResponse(certRes.value) &&
+        Array.isArray(certRes.value.data?.data) &&
+        certRes.value.data.data.length > 0
+      ) {
+        hasLiveSuccess = true;
+        newCertificates = sortCertificatesNewestFirst(certRes.value.data.data);
+        setCertificates(newCertificates);
       }
-      if (mediaRes.status === 'fulfilled' && mediaRes.value.data?.data) {
-        setMedia(mediaRes.value.data.data);
+
+      // Media
+      if (
+        mediaRes.status === 'fulfilled' &&
+        isValidJsonResponse(mediaRes.value) &&
+        Array.isArray(mediaRes.value.data?.data) &&
+        mediaRes.value.data.data.length > 0
+      ) {
+        hasLiveSuccess = true;
+        newMedia = mediaRes.value.data.data;
+        setMedia(newMedia);
+      }
+
+      setIsLiveConnected(hasLiveSuccess);
+
+      // Cache the consolidated data for super fast offline/subsequent loads
+      try {
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            profile: newProfile,
+            projects: newProjects,
+            skills: newSkills,
+            experiences: newExperiences,
+            certificates: newCertificates,
+            media: newMedia,
+            timestamp: Date.now(),
+          })
+        );
+      } catch (cacheErr) {
+        // storage quota exceeded or disabled
       }
 
       setError(null);
     } catch (err) {
-      console.error('Error loading portfolio data:', err);
+      console.warn('[PortfolioContext] API fetch notice: using high-performance local data.', err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -197,6 +267,7 @@ export const PortfolioProvider = ({ children }) => {
         certificates,
         media,
         loading,
+        isLiveConnected,
         error,
         refreshData: fetchData,
       }}

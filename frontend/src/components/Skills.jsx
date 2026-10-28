@@ -17,6 +17,7 @@ import {
   Container,
 } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
+import { initialSkills } from '../data/initialPortfolioData';
 
 // Dynamic icon resolver
 const getSkillIcon = (iconName) => {
@@ -71,6 +72,9 @@ export const Skills = () => {
   const { skills, profile } = usePortfolio();
   const [activeCategory, setActiveCategory] = useState('all');
 
+  const activeSkills =
+    Array.isArray(skills) && skills.length > 0 ? skills : initialSkills;
+
   const categories = [
     { id: 'all', name: 'All Skills' },
     { id: 'frontend', name: 'Frontend' },
@@ -82,14 +86,14 @@ export const Skills = () => {
 
   const filteredSkills =
     activeCategory === 'all'
-      ? skills
-      : skills.filter((s) => s.category === activeCategory);
+      ? activeSkills
+      : activeSkills.filter((s) => s.category === activeCategory);
 
   return (
-    <section id="skills" className="py-24 relative bg-nebula-950 border-y border-white/5">
+    <section id="skills" className="py-20 sm:py-24 relative bg-nebula-950 border-y border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-12">
+        <div className="flex flex-col items-center text-center mb-10 sm:mb-12">
           <span className="font-mono text-xs uppercase tracking-widest text-aurora-cyan font-semibold mb-2">
             {profile?.skillsHeaderBadge || '// My Tech Arsenal'}
           </span>
@@ -103,14 +107,14 @@ export const Skills = () => {
           </p>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        {/* Category Filter Pills (Mobile scrollable) */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 justify-start sm:justify-center mb-10 -mx-4 sm:mx-0 px-4 sm:px-0">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               type="button"
-              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-300 cursor-pointer ${
                 activeCategory === cat.id
                   ? 'bg-gradient-to-r from-aurora-cyan to-aurora-violet text-white shadow-md shadow-aurora-cyan/20 scale-105'
                   : 'bg-nebula-900 text-slate-400 hover:text-white border border-white/10 hover:border-aurora-cyan/30'
@@ -122,13 +126,13 @@ export const Skills = () => {
         </div>
 
         {/* Skills Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {filteredSkills.map((skill) => {
             const Icon = getSkillIcon(skill.icon || skill.name);
             return (
               <div
                 key={skill._id || skill.name}
-                className="group relative p-6 rounded-2xl bg-nebula-900/90 border border-white/10 hover:border-aurora-cyan/40 hover:bg-nebula-850/90 hover:-translate-y-1.5 transition-all duration-300 shadow-lg"
+                className="group relative p-5 sm:p-6 rounded-2xl bg-nebula-900/90 border border-white/10 hover:border-aurora-cyan/40 hover:bg-nebula-850/90 hover:-translate-y-1 transition-all duration-300 shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -139,7 +143,7 @@ export const Skills = () => {
                       <h4 className="font-display font-bold text-white text-base">
                         {skill.name}
                       </h4>
-                      <span className="font-mono text-[11px] text-slate-400 uppercase tracking-wider">
+                      <span className="font-mono text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider">
                         {skill.category}
                       </span>
                     </div>
