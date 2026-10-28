@@ -3,7 +3,6 @@ import { Award, ExternalLink, Calendar } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { sortCertificatesNewestFirst } from '../utils/certificateDateDetector';
 import { initialCertificates } from '../data/initialPortfolioData';
-import { getSafeImageUrl, getCertificateFallback } from '../utils/imageFallback';
 
 export const Certificates = () => {
   const { certificates } = usePortfolio();
@@ -13,10 +12,12 @@ export const Certificates = () => {
       ? certificates
       : initialCertificates;
 
-  // Ensure certificates are strictly sorted newest first -> oldest last
   const sortedCertificates = useMemo(() => {
     return sortCertificatesNewestFirst(activeCerts);
   }, [activeCerts]);
+
+  const fallbackCertImg =
+    'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80';
 
   return (
     <section id="certificates" className="py-20 sm:py-24 relative overflow-hidden bg-nebula-950">
@@ -38,8 +39,7 @@ export const Certificates = () => {
         {/* Certificates Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {sortedCertificates.map((cert) => {
-            const fallbackImg = getCertificateFallback(cert.title, cert.issuer);
-            const safeImg = getSafeImageUrl(cert.image, fallbackImg);
+            const imgSrc = cert.image || fallbackCertImg;
 
             return (
               <div
@@ -48,12 +48,12 @@ export const Certificates = () => {
               >
                 <div className="relative aspect-[4/3] bg-nebula-800 overflow-hidden">
                   <img
-                    src={safeImg}
+                    src={imgSrc}
                     alt={cert.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
-                      e.currentTarget.src = fallbackImg;
+                      e.currentTarget.src = fallbackCertImg;
                     }}
                   />
                   <div className="absolute top-3 right-3 p-1.5 rounded-full bg-slate-900/70 backdrop-blur-md text-aurora-cyan border border-white/10">

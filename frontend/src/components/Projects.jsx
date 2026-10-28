@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { ExternalLink, Github, Star, X, Layers, Sparkles } from 'lucide-react';
+import { ExternalLink, Github, Star, X, Sparkles } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { initialProjects } from '../data/initialPortfolioData';
-import { getSafeImageUrl, getProjectFallback } from '../utils/imageFallback';
 
 export const Projects = () => {
-  const { projects, loading } = usePortfolio();
+  const { projects } = usePortfolio();
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -25,6 +24,9 @@ export const Projects = () => {
       ? activeProjects
       : activeProjects.filter((p) => p.category === activeCategory);
 
+  const fallbackProjectImg =
+    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80';
+
   return (
     <section id="projects" className="py-20 sm:py-24 relative bg-nebula-950 border-y border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +44,7 @@ export const Projects = () => {
           </p>
         </div>
 
-        {/* Categories Pills (Horizontally scrollable on mobile, centered on desktop) */}
+        {/* Categories Pills */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-1 justify-start sm:justify-center mb-10 -mx-4 sm:mx-0 px-4 sm:px-0">
           {categories.map((cat) => (
             <button
@@ -82,8 +84,7 @@ export const Projects = () => {
             </div>
           ) : (
             filteredProjects.map((project) => {
-              const fallbackCover = getProjectFallback(project.title, project.category);
-              const safeCover = getSafeImageUrl(project.coverImage, fallbackCover);
+              const cover = project.coverImage || fallbackProjectImg;
 
               return (
                 <div
@@ -96,12 +97,12 @@ export const Projects = () => {
                     className="relative aspect-[16/10] overflow-hidden bg-nebula-800 cursor-pointer"
                   >
                     <img
-                      src={safeCover}
+                      src={cover}
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = fallbackCover;
+                        e.currentTarget.src = fallbackProjectImg;
                       }}
                     />
 
@@ -128,9 +129,11 @@ export const Projects = () => {
                       {project.title}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 leading-relaxed mb-4 flex-1">
-                      {project.summary || project.description}
-                    </p>
+                    {project.summary && (
+                      <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 leading-relaxed mb-4 flex-1">
+                        {project.summary}
+                      </p>
+                    )}
 
                     {/* Tech Pills */}
                     {project.technologies?.length > 0 && (
@@ -143,11 +146,6 @@ export const Projects = () => {
                             {tech}
                           </span>
                         ))}
-                        {project.technologies.length > 4 && (
-                          <span className="px-2 py-0.5 rounded-md text-[11px] font-mono bg-white/5 text-slate-500">
-                            +{project.technologies.length - 4}
-                          </span>
-                        )}
                       </div>
                     )}
 
@@ -196,11 +194,10 @@ export const Projects = () => {
         </div>
       </div>
 
-      {/* Project Modal Preview (Mobile & Desktop Responsive) */}
+      {/* Project Modal Preview */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
           <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-nebula-900 border border-white/15 p-5 sm:p-8 shadow-2xl space-y-6">
-            {/* Close Button */}
             <button
               onClick={() => setSelectedProject(null)}
               className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full bg-white/10 text-slate-300 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
@@ -209,21 +206,14 @@ export const Projects = () => {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Modal Image */}
             <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-nebula-800">
               <img
-                src={getSafeImageUrl(
-                  selectedProject.coverImage,
-                  getProjectFallback(selectedProject.title, selectedProject.category)
-                )}
+                src={selectedProject.coverImage || fallbackProjectImg}
                 alt={selectedProject.title}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = getProjectFallback(
-                    selectedProject.title,
-                    selectedProject.category
-                  );
+                  e.currentTarget.src = fallbackProjectImg;
                 }}
               />
             </div>
@@ -247,7 +237,6 @@ export const Projects = () => {
                 {selectedProject.description || selectedProject.summary}
               </p>
 
-              {/* Technologies */}
               {selectedProject.technologies?.length > 0 && (
                 <div className="space-y-2 mb-6">
                   <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400">
@@ -266,7 +255,6 @@ export const Projects = () => {
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div className="flex flex-wrap gap-3 pt-4 border-t border-white/10">
                 {selectedProject.liveUrl && (
                   <a
