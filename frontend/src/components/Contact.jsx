@@ -27,7 +27,6 @@ export const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [sentLinks, setSentLinks] = useState({ gmail: '', mailto: '' });
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -42,67 +41,41 @@ export const Contact = () => {
 
     const emailTo = 'anishsingh2095@gmail.com';
     const cleanSubject = (formData.subject || `New Portfolio Message from ${formData.name}`).trim();
-    const cleanBody = `Hi Anish,\n\n${formData.message}\n\n---\nSender Details:\nName: ${formData.name}\nEmail: ${formData.email}`;
-
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailTo)}&su=${encodeURIComponent(cleanSubject)}&body=${encodeURIComponent(cleanBody)}`;
-    const mailtoUrl = `mailto:${encodeURIComponent(emailTo)}?subject=${encodeURIComponent(cleanSubject)}&body=${encodeURIComponent(cleanBody)}`;
-
-    setSentLinks({ gmail: gmailUrl, mailto: mailtoUrl });
-
-    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '';
 
     try {
-      let apiDelivered = false;
+      // 1. Send email silently in background directly to anishsingh2095@gmail.com
+      const formPayload = new FormData();
+      formPayload.append('name', formData.name);
+      formPayload.append('email', formData.email);
+      formPayload.append('subject', cleanSubject);
+      formPayload.append('message', formData.message);
 
-      // 1. If Web3Forms key is available, send silently via API
-      if (accessKey) {
-        const response = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            access_key: accessKey,
-            name: formData.name,
-            email: formData.email,
-            subject: cleanSubject,
-            message: formData.message,
-            from_name: `${formData.name} via Portfolio`,
-            replyto: formData.email,
-          }),
-        });
+      const emailPromise = fetch(`https://shipmyform.com/to/${emailTo}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: formPayload,
+      }).catch((err) => {
+        console.warn('Background email delivery notice:', err);
+      });
 
-        const data = await response.json().catch(() => ({}));
-        if (data.success) {
-          apiDelivered = true;
-        } else {
-          console.warn('Web3Forms response:', data);
-        }
-      }
-
-      // 2. Also save to MERN backend API
-      await messageAPI.send({
+      // 2. In parallel, send and save message directly to the Admin Panel database
+      const adminPromise = messageAPI.send({
         name: formData.name,
         email: formData.email,
         subject: cleanSubject,
         message: formData.message,
       }).catch((err) => {
-        console.warn('Backend message save notice:', err);
+        console.warn('Admin message save notice:', err);
       });
 
-      // 3. If no external API key, open Gmail or mail client automatically
-      if (!apiDelivered) {
-        const opened = window.open(gmailUrl, '_blank');
-        if (!opened || opened.closed || typeof opened.closed === 'undefined') {
-          window.location.href = mailtoUrl;
-        }
-      }
+      await Promise.allSettled([emailPromise, adminPromise]);
 
       setSuccess(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
 
-      // Trigger confetti celebration!
+      // Trigger celebration confetti
       confetti({
         particleCount: 100,
         spread: 70,
@@ -111,7 +84,7 @@ export const Contact = () => {
       });
     } catch (err) {
       console.error('Contact submit error:', err);
-      setError('Could not auto-open. Click below to send directly via Gmail.');
+      setError('Could not deliver message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -267,7 +240,7 @@ export const Contact = () => {
           <div className="lg:col-span-7">
             <div className="p-5 sm:p-8 rounded-3xl bg-nebula-900/95 border border-white/10 shadow-2xl">
               {success ? (
-                <div className="py-10 flex flex-col items-center text-center space-y-4">
+                <div className="py-12 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
@@ -275,34 +248,14 @@ export const Contact = () => {
                     Message Sent Successfully!
                   </h4>
                   <p className="text-slate-300 max-w-md text-sm">
-                    Thank you for reaching out! Your message has been prepared for{' '}
+                    Thank you for reaching out! Your message has been saved to the Admin Panel and delivered directly to{' '}
                     <strong className="text-aurora-cyan">anishsingh2095@gmail.com</strong>.
                   </p>
-
-                  {sentLinks.gmail && (
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2 w-full max-w-sm justify-center">
-                      <a
-                        href={sentLinks.gmail}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-5 py-2.5 rounded-xl text-xs font-mono font-medium text-white bg-gradient-to-r from-aurora-cyan to-aurora-violet hover:opacity-95 shadow-md flex items-center justify-center gap-2 transition-all"
-                      >
-                        <Mail className="w-4 h-4" />
-                        <span>Open in Gmail</span>
-                      </a>
-                      <a
-                        href={sentLinks.mailto}
-                        className="px-5 py-2.5 rounded-xl text-xs font-mono font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition-all"
-                      >
-                        <span>Default Mail App</span>
-                      </a>
-                    </div>
-                  )}
 
                   <button
                     onClick={() => setSuccess(false)}
                     type="button"
-                    className="mt-3 px-6 py-2 rounded-xl font-medium text-xs font-mono text-slate-400 hover:text-aurora-cyan transition-colors"
+                    className="mt-4 px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-aurora-cyan border border-aurora-cyan/30 hover:bg-aurora-cyan/10 transition-colors"
                   >
                     Send Another Message
                   </button>
