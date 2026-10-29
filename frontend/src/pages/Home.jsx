@@ -7,7 +7,6 @@ import { Skills } from '../components/Skills';
 import { ExperienceTimeline } from '../components/ExperienceTimeline';
 import { Projects } from '../components/Projects';
 import { Certificates } from '../components/Certificates';
-import { MediaShowcase } from '../components/MediaShowcase';
 import { Contact } from '../components/Contact';
 import { Footer } from '../components/Footer';
 
@@ -23,7 +22,6 @@ export const Home = () => {
         <ExperienceTimeline />
         <Projects />
         <Certificates />
-        <MediaShowcase />
         <Contact />
       </main>
       <Footer />

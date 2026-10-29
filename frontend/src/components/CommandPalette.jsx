@@ -6,7 +6,6 @@ import {
   FolderGit2,
   Cpu,
   Award,
-  Video,
   Mail,
   Lock,
   Copy,
@@ -83,16 +82,6 @@ export const CommandPalette = ({ isOpen, onClose, onOpenAdminLogin }) => {
           icon: Award,
           action: () => {
             window.location.hash = '#certificates';
-            onClose();
-          },
-        },
-        {
-          id: 'nav-media',
-          title: 'Media Showcase',
-          subtitle: 'Tech Tutorials & Demos',
-          icon: Video,
-          action: () => {
-            window.location.hash = '#media';
             onClose();
           },
         },

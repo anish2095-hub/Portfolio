@@ -7,7 +7,6 @@ import {
   Cpu,
   GraduationCap,
   Award,
-  Video,
   Mail,
   Settings,
   LogOut,
@@ -70,7 +69,6 @@ export const AdminLayout = () => {
     { name: 'Skills', path: '/admin/skills', icon: Cpu },
     { name: 'Experience', path: '/admin/experience', icon: GraduationCap },
     { name: 'Certificates', path: '/admin/certificates', icon: Award },
-    { name: 'Media / Videos', path: '/admin/media', icon: Video },
     {
       name: 'Messages',
       path: '/admin/messages',
