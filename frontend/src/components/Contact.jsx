@@ -27,7 +27,7 @@ export const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [activationNeeded, setActivationNeeded] = useState(false);
+  const [sentLinks, setSentLinks] = useState({ gmail: '', mailto: '' });
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -40,68 +40,78 @@ export const Contact = () => {
     setLoading(true);
     setError(null);
 
-    const submissionData = {
-      name: formData.name,
-      email: formData.email,
-      subject: formData.subject || `New Portfolio Message from ${formData.name}`,
-      message: formData.message,
-      _template: 'table',
-      _captcha: 'false',
-    };
+    const emailTo = 'anishsingh2095@gmail.com';
+    const cleanSubject = (formData.subject || `New Portfolio Message from ${formData.name}`).trim();
+    const cleanBody = `Hi Anish,\n\n${formData.message}\n\n---\nSender Details:\nName: ${formData.name}\nEmail: ${formData.email}`;
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailTo)}&su=${encodeURIComponent(cleanSubject)}&body=${encodeURIComponent(cleanBody)}`;
+    const mailtoUrl = `mailto:${encodeURIComponent(emailTo)}?subject=${encodeURIComponent(cleanSubject)}&body=${encodeURIComponent(cleanBody)}`;
+
+    setSentLinks({ gmail: gmailUrl, mailto: mailtoUrl });
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '';
 
     try {
-      // 1. Send email directly to anishsingh2095@gmail.com using FormSubmit.co AJAX API
-      const fsPromise = fetch('https://formsubmit.co/ajax/anishsingh2095@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
-      });
+      let apiDelivered = false;
 
-      // 2. Also save to MERN backend API in parallel
-      const backendPromise = messageAPI.send(formData).catch((err) => {
+      // 1. If Web3Forms key is available, send silently via API
+      if (accessKey) {
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: formData.name,
+            email: formData.email,
+            subject: cleanSubject,
+            message: formData.message,
+            from_name: `${formData.name} via Portfolio`,
+            replyto: formData.email,
+          }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (data.success) {
+          apiDelivered = true;
+        } else {
+          console.warn('Web3Forms response:', data);
+        }
+      }
+
+      // 2. Also save to MERN backend API
+      await messageAPI.send({
+        name: formData.name,
+        email: formData.email,
+        subject: cleanSubject,
+        message: formData.message,
+      }).catch((err) => {
         console.warn('Backend message save notice:', err);
       });
 
-      const [fsResult] = await Promise.allSettled([fsPromise, backendPromise]);
-
-      let isSuccess = false;
-      let isActivation = false;
-
-      if (fsResult.status === 'fulfilled') {
-        const data = await fsResult.value.json().catch(() => ({}));
-        console.log('FormSubmit API response:', data);
-
-        if (data.message && data.message.toLowerCase().includes('activation')) {
-          isActivation = true;
-        } else if (data.success === 'true' || data.success === true) {
-          isSuccess = true;
-        } else {
-          isSuccess = true;
+      // 3. If no external API key, open Gmail or mail client automatically
+      if (!apiDelivered) {
+        const opened = window.open(gmailUrl, '_blank');
+        if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+          window.location.href = mailtoUrl;
         }
-      } else {
-        isSuccess = true;
       }
 
-      if (isActivation) {
-        setActivationNeeded(true);
-      } else {
-        setSuccess(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
+      setSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
 
-        // Trigger confetti celebration!
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
-        });
-      }
+      // Trigger confetti celebration!
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#06b6d4', '#8b5cf6', '#f43f5e', '#38bdf8'],
+      });
     } catch (err) {
       console.error('Contact submit error:', err);
-      setError('Failed to send message. Please try again or email directly.');
+      setError('Could not auto-open. Click below to send directly via Gmail.');
     } finally {
       setLoading(false);
     }
@@ -256,49 +266,8 @@ export const Contact = () => {
           {/* Right: Interactive Form */}
           <div className="lg:col-span-7">
             <div className="p-5 sm:p-8 rounded-3xl bg-nebula-900/95 border border-white/10 shadow-2xl">
-              {activationNeeded ? (
-                <div className="py-8 flex flex-col items-center text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center">
-                    <Mail className="w-8 h-8" />
-                  </div>
-                  <h4 className="font-display text-2xl font-bold text-white">
-                    One-Time Activation Required
-                  </h4>
-                  <p className="text-slate-300 max-w-md text-sm">
-                    FormSubmit has sent an activation confirmation email to{' '}
-                    <strong className="text-aurora-cyan font-semibold">anishsingh2095@gmail.com</strong>.
-                  </p>
-                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-left text-xs text-amber-200/90 space-y-2 max-w-md w-full">
-                    <p className="font-semibold text-amber-400">To start receiving emails directly:</p>
-                    <ol className="list-decimal list-inside space-y-1.5 text-slate-300">
-                      <li>Open your Gmail (<a href="https://mail.google.com" target="_blank" rel="noreferrer" className="underline text-aurora-cyan font-semibold">mail.google.com</a>).</li>
-                      <li>Check your <strong>Inbox</strong> or <strong>Spam / Junk</strong> folder for an email from <strong>FormSubmit</strong>.</li>
-                      <li>Click the <strong className="text-white">"Activate Form"</strong> button.</li>
-                    </ol>
-                    <p className="text-[11px] text-slate-400 pt-1">
-                      Once activated, all future messages will instantly be delivered directly to your inbox.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-3 justify-center pt-2">
-                    <a
-                      href="https://mail.google.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-white bg-gradient-to-r from-aurora-cyan to-aurora-violet hover:opacity-95 transition-all shadow-md"
-                    >
-                      Open Gmail Now &rarr;
-                    </a>
-                    <button
-                      onClick={() => setActivationNeeded(false)}
-                      type="button"
-                      className="px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-slate-400 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
-                    >
-                      Back to Form
-                    </button>
-                  </div>
-                </div>
-              ) : success ? (
-                <div className="py-12 flex flex-col items-center text-center space-y-4">
+              {success ? (
+                <div className="py-10 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
@@ -306,12 +275,34 @@ export const Contact = () => {
                     Message Sent Successfully!
                   </h4>
                   <p className="text-slate-300 max-w-md text-sm">
-                    Thank you for reaching out. Your message has been sent directly to my email and I'll get back to you shortly!
+                    Thank you for reaching out! Your message has been prepared for{' '}
+                    <strong className="text-aurora-cyan">anishsingh2095@gmail.com</strong>.
                   </p>
+
+                  {sentLinks.gmail && (
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2 w-full max-w-sm justify-center">
+                      <a
+                        href={sentLinks.gmail}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-5 py-2.5 rounded-xl text-xs font-mono font-medium text-white bg-gradient-to-r from-aurora-cyan to-aurora-violet hover:opacity-95 shadow-md flex items-center justify-center gap-2 transition-all"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span>Open in Gmail</span>
+                      </a>
+                      <a
+                        href={sentLinks.mailto}
+                        className="px-5 py-2.5 rounded-xl text-xs font-mono font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition-all"
+                      >
+                        <span>Default Mail App</span>
+                      </a>
+                    </div>
+                  )}
+
                   <button
                     onClick={() => setSuccess(false)}
                     type="button"
-                    className="mt-4 px-6 py-2.5 rounded-xl font-medium text-xs font-mono text-aurora-cyan border border-aurora-cyan/30 hover:bg-aurora-cyan/10 transition-colors"
+                    className="mt-3 px-6 py-2 rounded-xl font-medium text-xs font-mono text-slate-400 hover:text-aurora-cyan transition-colors"
                   >
                     Send Another Message
                   </button>
@@ -325,11 +316,19 @@ export const Contact = () => {
                       value={formData.subject || `New Portfolio Message from ${formData.name || 'Visitor'}`}
                     />
                     {error && (
-                    <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm flex items-center gap-3">
-                      <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                      <span>{error}</span>
-                    </div>
-                  )}
+                      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+                          <span>{error}</span>
+                        </div>
+                        <a
+                          href={`mailto:anishsingh2095@gmail.com?subject=${encodeURIComponent(formData.subject || 'Portfolio Inquiry')}&body=${encodeURIComponent(`Hi Anish,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`}
+                          className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-white font-mono text-xs whitespace-nowrap transition-colors"
+                        >
+                          Send via Gmail &rarr;
+                        </a>
+                      </div>
+                    )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
